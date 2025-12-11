@@ -10,11 +10,11 @@ const useExistingOrderItem = (item, isOpen, supabase, userId) => {
     if (item && isOpen && supabase && userId) {
       const checkExistingOrder = async () => {
         if (!item.id) return;
-        
+
         setIsLoadingExisting(true);
         setExistingOrderItem(null);
         setErrorExisting(null);
-        
+
         try {
           const { data, error } = await supabase
             .from('order_items')
@@ -28,7 +28,7 @@ const useExistingOrderItem = (item, isOpen, supabase, userId) => {
           if (!isMounted) return;
 
           if (error) {
-            console.error("Error checking existing order item (hook):", error);
+            console.error('Error checking existing order item (hook):', error);
             setErrorExisting(error);
             setExistingOrderItem(null);
           } else {
@@ -36,7 +36,7 @@ const useExistingOrderItem = (item, isOpen, supabase, userId) => {
           }
         } catch (e) {
           if (!isMounted) return;
-          console.error("Exception checking existing order item (hook):", e);
+          console.error('Exception checking existing order item (hook):', e);
           setErrorExisting(e);
           setExistingOrderItem(null);
         } finally {
@@ -49,7 +49,9 @@ const useExistingOrderItem = (item, isOpen, supabase, userId) => {
       setIsLoadingExisting(false);
       setErrorExisting(null);
     }
-    return () => { isMounted = false; };
+    return () => {
+      isMounted = false;
+    };
   }, [item, isOpen, supabase, userId]);
 
   return { existingOrderItem, isLoadingExisting, errorExisting };

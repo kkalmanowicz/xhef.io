@@ -10,14 +10,15 @@ const useInventoryModals = () => {
   });
   const [selectedItem, setSelectedItem] = useState(null);
 
-  const openModal = (modalName) => {
+  const openModal = modalName => {
     setModalState(prev => ({ ...prev, [modalName]: true }));
   };
 
-  const closeModal = (modalName) => {
+  const closeModal = modalName => {
     setModalState(prev => ({ ...prev, [modalName]: false }));
-    if (modalName !== 'bulkUpload') { // Keep selected item for bulk upload if needed, otherwise clear
-        setSelectedItem(null);
+    if (modalName !== 'bulkUpload') {
+      // Keep selected item for bulk upload if needed, otherwise clear
+      setSelectedItem(null);
     }
   };
 

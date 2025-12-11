@@ -1,35 +1,47 @@
-import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, ShoppingCart, History, AlertTriangle, PackagePlus } from "lucide-react";
-import { useSupabase } from "@/contexts/SupabaseContext";
-import { useToast } from "@/components/ui/use-toast";
-import { Button } from "@/components/ui/button";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  useRef,
+} from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Loader2,
+  ShoppingCart,
+  History,
+  AlertTriangle,
+  PackagePlus,
+} from 'lucide-react';
+import { useSupabase } from '@/contexts/SupabaseContext';
+import { useToast } from '@/components/ui/use-toast';
+import { Button } from '@/components/ui/button';
 
-import CurrentOrderTab from "@/components/orderlist/CurrentOrderTab";
-import SuggestedItemsTab from "@/components/orderlist/SuggestedItemsTab";
-import OrderHistoryTab from "@/components/orderlist/OrderHistoryTab";
-import AddToOrderDialog from "@/components/inventory/AddToOrderDialog";
-import EditOrderItemDialog from "@/components/orderlist/EditOrderItemDialog";
-import QuickAddItemDialog from "@/components/orderlist/QuickAddItemDialog";
-import ReorderDialog from "@/components/orderlist/ReorderDialog";
+import CurrentOrderTab from '@/components/orderlist/CurrentOrderTab';
+import SuggestedItemsTab from '@/components/orderlist/SuggestedItemsTab';
+import OrderHistoryTab from '@/components/orderlist/OrderHistoryTab';
+import AddToOrderDialog from '@/components/inventory/AddToOrderDialog';
+import EditOrderItemDialog from '@/components/orderlist/EditOrderItemDialog';
+import QuickAddItemDialog from '@/components/orderlist/QuickAddItemDialog';
+import ReorderDialog from '@/components/orderlist/ReorderDialog';
 
 import {
   fetchCurrentOrderItems,
   fetchSuggestedOrderItems,
   fetchOrderHistoryPageData,
-} from "@/services/orderService";
-import { fetchCategories } from "@/services/categoryService";
-import { fetchVendors } from "@/services/vendorService";
+} from '@/services/orderService';
+import { fetchCategories } from '@/services/categoryService';
+import { fetchVendors } from '@/services/vendorService';
 
-import OrderListHeader from "@/components/orderlist/OrderListHeader";
-import OrderListModals from "@/components/orderlist/OrderListModals";
-import OrderListFilterControls from "@/components/orderlist/OrderListFilterControls";
+import OrderListHeader from '@/components/orderlist/OrderListHeader';
+import OrderListModals from '@/components/orderlist/OrderListModals';
+import OrderListFilterControls from '@/components/orderlist/OrderListFilterControls';
 
-import useOrderListRealtime from "@/hooks/useOrderListRealtime";
-import useOrderListActions from "@/hooks/useOrderListActions";
-import useOrderListModalsHook from "@/hooks/useOrderListModals";
+import useOrderListRealtime from '@/hooks/useOrderListRealtime';
+import useOrderListActions from '@/hooks/useOrderListActions';
+import useOrderListModalsHook from '@/hooks/useOrderListModals';
 
 function OrderList() {
   const { supabase, userId } = useSupabase();
@@ -39,7 +51,7 @@ function OrderList() {
   const [currentOrder, setCurrentOrder] = useState([]);
   const [suggestedItems, setSuggestedItems] = useState([]);
   const [orderHistory, setOrderHistory] = useState([]);
-  
+
   const [categories, setCategories] = useState([]);
   const [vendors, setVendors] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -47,8 +59,8 @@ function OrderList() {
 
   const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
   const [isReorderDialogOpen, setIsReorderDialogOpen] = useState(false);
-  const [historicalOrderToReorder, setHistoricalOrderToReorder] = useState(null);
-
+  const [historicalOrderToReorder, setHistoricalOrderToReorder] =
+    useState(null);
 
   const [loadingStates, setLoadingStates] = useState({
     current: true,
@@ -58,7 +70,7 @@ function OrderList() {
     vendors: true,
     initialPageLoad: true,
   });
-  const [activeTab, setActiveTab] = useState("current");
+  const [activeTab, setActiveTab] = useState('current');
 
   const isMounted = useRef(true);
   const initialLoadPerformed = useRef(false);
@@ -76,27 +88,47 @@ function OrderList() {
     }
   }, []);
 
-  const loadData = useCallback(async (dataType, fetchFunction, showLoader = true) => {
-    if (!userId || !supabase) return;
-    if (showLoader) updateLoadingState(dataType, true);
-    try {
-      const data = await fetchFunction(supabase, userId);
-      if (isMounted.current) {
-        if (dataType === 'current') setCurrentOrder(data);
-        else if (dataType === 'suggested') setSuggestedItems(data);
-        else if (dataType === 'history') setOrderHistory(data);
+  const loadData = useCallback(
+    async (dataType, fetchFunction, showLoader = true) => {
+      if (!userId || !supabase) return;
+      if (showLoader) updateLoadingState(dataType, true);
+      try {
+        const data = await fetchFunction(supabase, userId);
+        if (isMounted.current) {
+          if (dataType === 'current') setCurrentOrder(data);
+          else if (dataType === 'suggested') setSuggestedItems(data);
+          else if (dataType === 'history') setOrderHistory(data);
+        }
+      } catch (error) {
+        console.error(`Error fetching ${dataType}:`, error);
+        if (isMounted.current)
+          toast({
+            variant: 'destructive',
+            title: 'Error',
+            description: `Failed to fetch ${dataType}.`,
+          });
+      } finally {
+        if (isMounted.current) updateLoadingState(dataType, false);
       }
-    } catch (error) {
-      console.error(`Error fetching ${dataType}:`, error);
-      if (isMounted.current) toast({ variant: "destructive", title: "Error", description: `Failed to fetch ${dataType}.` });
-    } finally {
-      if (isMounted.current) updateLoadingState(dataType, false);
-    }
-  }, [supabase, userId, toast, updateLoadingState]);
+    },
+    [supabase, userId, toast, updateLoadingState]
+  );
 
-  const loadCurrentOrder = useCallback((showLoader = true) => loadData('current', fetchCurrentOrderItems, showLoader), [loadData]);
-  const loadSuggestedItems = useCallback((showLoader = true) => loadData('suggested', fetchSuggestedOrderItems, showLoader), [loadData]);
-  const loadOrderHistory = useCallback((showLoader = true) => loadData('history', fetchOrderHistoryPageData, showLoader), [loadData]);
+  const loadCurrentOrder = useCallback(
+    (showLoader = true) =>
+      loadData('current', fetchCurrentOrderItems, showLoader),
+    [loadData]
+  );
+  const loadSuggestedItems = useCallback(
+    (showLoader = true) =>
+      loadData('suggested', fetchSuggestedOrderItems, showLoader),
+    [loadData]
+  );
+  const loadOrderHistory = useCallback(
+    (showLoader = true) =>
+      loadData('history', fetchOrderHistoryPageData, showLoader),
+    [loadData]
+  );
 
   const loadCategoriesAndVendors = useCallback(async () => {
     if (!userId || !supabase) return;
@@ -105,15 +137,20 @@ function OrderList() {
     try {
       const [categoriesData, vendorsData] = await Promise.all([
         fetchCategories(supabase, userId),
-        fetchVendors(supabase, userId)
+        fetchVendors(supabase, userId),
       ]);
       if (isMounted.current) {
         setCategories(categoriesData || []);
         setVendors(vendorsData || []);
       }
     } catch (error) {
-      console.error("Error fetching filters data:", error);
-      if (isMounted.current) toast({ variant: "destructive", title: "Error", description: "Failed to load filters." });
+      console.error('Error fetching filters data:', error);
+      if (isMounted.current)
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: 'Failed to load filters.',
+        });
     } finally {
       if (isMounted.current) {
         updateLoadingState('categories', false);
@@ -121,7 +158,7 @@ function OrderList() {
       }
     }
   }, [supabase, userId, toast, updateLoadingState]);
-  
+
   useEffect(() => {
     if (userId && supabase && !initialLoadPerformed.current) {
       updateLoadingState('initialPageLoad', true);
@@ -129,25 +166,39 @@ function OrderList() {
         loadCurrentOrder(),
         loadSuggestedItems(),
         loadOrderHistory(),
-        loadCategoriesAndVendors()
+        loadCategoriesAndVendors(),
       ]).finally(() => {
-        if(isMounted.current) {
+        if (isMounted.current) {
           updateLoadingState('initialPageLoad', false);
           initialLoadPerformed.current = true;
         }
       });
     }
-  }, [userId, supabase, loadCurrentOrder, loadSuggestedItems, loadOrderHistory, loadCategoriesAndVendors, updateLoadingState]);
+  }, [
+    userId,
+    supabase,
+    loadCurrentOrder,
+    loadSuggestedItems,
+    loadOrderHistory,
+    loadCategoriesAndVendors,
+    updateLoadingState,
+  ]);
 
-  useOrderListRealtime(supabase, userId, loadCurrentOrder, loadSuggestedItems, loadOrderHistory);
+  useOrderListRealtime(
+    supabase,
+    userId,
+    loadCurrentOrder,
+    loadSuggestedItems,
+    loadOrderHistory
+  );
 
-  const { 
-    modalState, 
-    selectedInventoryItem, 
-    itemToDelete, 
+  const {
+    modalState,
+    selectedInventoryItem,
+    itemToDelete,
     itemToEdit,
-    handleOpenModal, 
-    handleCloseModal 
+    handleOpenModal,
+    handleCloseModal,
   } = useOrderListModalsHook();
 
   const {
@@ -158,26 +209,32 @@ function OrderList() {
     executeDeleteItem,
     executeCompleteOrder,
   } = useOrderListActions(
-    supabase, 
-    userId, 
-    currentOrder, 
-    itemToDelete, 
-    itemToEdit, 
-    handleCloseModal, 
-    navigate, 
+    supabase,
+    userId,
+    currentOrder,
+    itemToDelete,
+    itemToEdit,
+    handleCloseModal,
+    navigate,
     toast,
-    loadCurrentOrder, 
-    loadSuggestedItems 
+    loadCurrentOrder,
+    loadSuggestedItems
   );
 
   const filteredCurrentOrder = useMemo(() => {
     return currentOrder.filter(item => {
       const categoryName = item.inventory_items?.categories?.name;
       const vendorName = item.inventory_items?.vendors?.name;
-      const selectedCategoryObj = categories.find(c => c.id === selectedCategory);
+      const selectedCategoryObj = categories.find(
+        c => c.id === selectedCategory
+      );
       const selectedVendorObj = vendors.find(v => v.id === selectedVendor);
-      const categoryMatch = !selectedCategory || (selectedCategoryObj && categoryName === selectedCategoryObj.name);
-      const vendorMatch = !selectedVendor || (selectedVendorObj && vendorName === selectedVendorObj.name);
+      const categoryMatch =
+        !selectedCategory ||
+        (selectedCategoryObj && categoryName === selectedCategoryObj.name);
+      const vendorMatch =
+        !selectedVendor ||
+        (selectedVendorObj && vendorName === selectedVendorObj.name);
       return categoryMatch && vendorMatch;
     });
   }, [currentOrder, selectedCategory, selectedVendor, categories, vendors]);
@@ -186,10 +243,16 @@ function OrderList() {
     return suggestedItems.filter(item => {
       const categoryName = item.categories?.name;
       const vendorName = item.vendors?.name;
-      const selectedCategoryObj = categories.find(c => c.id === selectedCategory);
+      const selectedCategoryObj = categories.find(
+        c => c.id === selectedCategory
+      );
       const selectedVendorObj = vendors.find(v => v.id === selectedVendor);
-      const categoryMatch = !selectedCategory || (selectedCategoryObj && categoryName === selectedCategoryObj.name);
-      const vendorMatch = !selectedVendor || (selectedVendorObj && vendorName === selectedVendorObj.name);
+      const categoryMatch =
+        !selectedCategory ||
+        (selectedCategoryObj && categoryName === selectedCategoryObj.name);
+      const vendorMatch =
+        !selectedVendor ||
+        (selectedVendorObj && vendorName === selectedVendorObj.name);
       return categoryMatch && vendorMatch;
     });
   }, [suggestedItems, selectedCategory, selectedVendor, categories, vendors]);
@@ -202,10 +265,14 @@ function OrderList() {
       .map(order => ({
         ...order,
         order_history: order.order_history.filter(item => {
-          const categoryName = item.inventory_items?.categories?.name; 
+          const categoryName = item.inventory_items?.categories?.name;
           const vendorName = item.inventory_items?.vendors?.name;
-          const categoryMatch = !selectedCategory || (selectedCategoryObj && categoryName === selectedCategoryObj.name);
-          const vendorMatch = !selectedVendor || (selectedVendorObj && vendorName === selectedVendorObj.name);
+          const categoryMatch =
+            !selectedCategory ||
+            (selectedCategoryObj && categoryName === selectedCategoryObj.name);
+          const vendorMatch =
+            !selectedVendor ||
+            (selectedVendorObj && vendorName === selectedVendorObj.name);
           return categoryMatch && vendorMatch;
         }),
       }))
@@ -213,20 +280,25 @@ function OrderList() {
   }, [orderHistory, selectedCategory, selectedVendor, categories, vendors]);
 
   const currentOrderTotal = useMemo(() => {
-    return filteredCurrentOrder.reduce((sum, item) => sum + (item.total_price || 0), 0);
+    return filteredCurrentOrder.reduce(
+      (sum, item) => sum + (item.total_price || 0),
+      0
+    );
   }, [filteredCurrentOrder]);
 
-  if (loadingStates.initialPageLoad && !userId) { 
+  if (loadingStates.initialPageLoad && !userId) {
     return (
       <div className="flex justify-center items-center min-h-[calc(100vh-200px)]">
         <Loader2 className="w-12 h-12 text-primary animate-spin" />
-        <p className="ml-4 text-lg text-gray-600 dark:text-gray-300">Initializing...</p>
+        <p className="ml-4 text-lg text-gray-600 dark:text-gray-300">
+          Initializing...
+        </p>
       </div>
     );
   }
-  
+
   if (loadingStates.initialPageLoad && userId) {
-     return (
+    return (
       <div className="flex justify-center items-center min-h-[calc(100vh-200px)]">
         <Loader2 className="w-12 h-12 text-primary animate-spin" />
       </div>
@@ -235,36 +307,36 @@ function OrderList() {
 
   const handleQuickAddSuccess = () => {
     setIsQuickAddOpen(false);
-    loadCurrentOrder(false); 
-    loadCategoriesAndVendors(); 
+    loadCurrentOrder(false);
+    loadCategoriesAndVendors();
   };
 
-  const handleOpenReorderDialog = (order) => {
+  const handleOpenReorderDialog = order => {
     setHistoricalOrderToReorder(order);
     setIsReorderDialogOpen(true);
   };
 
   const handleReorderSuccess = () => {
-    loadCurrentOrder(false); 
-    setActiveTab("current");
+    loadCurrentOrder(false);
+    setActiveTab('current');
   };
 
   return (
     <div className="space-y-6 p-4 md:p-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <OrderListHeader 
-          currentOrderTotal={currentOrderTotal} 
+        <OrderListHeader
+          currentOrderTotal={currentOrderTotal}
           onCompleteOrder={() => handleOpenModal('isCompleteOrderOpen')}
           isCompletingOrder={isCompletingOrder}
           hasItems={currentOrder.length > 0}
         />
-        <Button 
-            onClick={() => setIsQuickAddOpen(true)} 
-            variant="outline" 
-            className="w-full sm:w-auto border-primary text-primary hover:bg-primary/10 dark:border-primary-400 dark:text-primary-400 dark:hover:bg-primary-400/10"
+        <Button
+          onClick={() => setIsQuickAddOpen(true)}
+          variant="outline"
+          className="w-full sm:w-auto border-primary text-primary hover:bg-primary/10 dark:border-primary-400 dark:text-primary-400 dark:hover:bg-primary-400/10"
         >
-            <PackagePlus className="w-4 h-4 mr-2" />
-            Quick Add Item
+          <PackagePlus className="w-4 h-4 mr-2" />
+          Quick Add Item
         </Button>
       </div>
 
@@ -282,13 +354,16 @@ function OrderList() {
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-3 border-b dark:border-gray-700">
           <TabsTrigger value="current">
-            <ShoppingCart className="w-4 h-4 mr-2" /> Current Order ({filteredCurrentOrder.length})
+            <ShoppingCart className="w-4 h-4 mr-2" /> Current Order (
+            {filteredCurrentOrder.length})
           </TabsTrigger>
           <TabsTrigger value="suggested">
-            <AlertTriangle className="w-4 h-4 mr-2" /> Suggested ({filteredSuggestedItems.length})
+            <AlertTriangle className="w-4 h-4 mr-2" /> Suggested (
+            {filteredSuggestedItems.length})
           </TabsTrigger>
           <TabsTrigger value="history">
-            <History className="w-4 h-4 mr-2" /> History ({filteredOrderHistory.length})
+            <History className="w-4 h-4 mr-2" /> History (
+            {filteredOrderHistory.length})
           </TabsTrigger>
         </TabsList>
 
@@ -304,8 +379,8 @@ function OrderList() {
             <CurrentOrderTab
               items={filteredCurrentOrder}
               loading={loadingStates.current && !initialLoadPerformed.current}
-              onEditItem={(item) => handleOpenModal('isEditOrderItemOpen', item)}
-              onDeleteItem={(item) => handleOpenModal('isDeleteOpen', item)}
+              onEditItem={item => handleOpenModal('isEditOrderItemOpen', item)}
+              onDeleteItem={item => handleOpenModal('isDeleteOpen', item)}
               selectedVendor={selectedVendor}
               selectedCategory={selectedCategory}
             />
@@ -314,15 +389,15 @@ function OrderList() {
             <SuggestedItemsTab
               items={filteredSuggestedItems}
               loading={loadingStates.suggested && !initialLoadPerformed.current}
-              onAddToOrder={(item) => handleOpenModal('isAddToOrderOpen', item)}
+              onAddToOrder={item => handleOpenModal('isAddToOrderOpen', item)}
               currentOrderItems={currentOrder}
               selectedVendor={selectedVendor}
               selectedCategory={selectedCategory}
             />
           </TabsContent>
           <TabsContent value="history">
-            <OrderHistoryTab 
-              orders={filteredOrderHistory} 
+            <OrderHistoryTab
+              orders={filteredOrderHistory}
               loading={loadingStates.history && !initialLoadPerformed.current}
               selectedVendor={selectedVendor}
               selectedCategory={selectedCategory}
@@ -342,19 +417,19 @@ function OrderList() {
         executeCompleteOrder={executeCompleteOrder}
         isCompletingOrder={isCompletingOrder}
       />
-      
+
       {selectedInventoryItem && (
         <AddToOrderDialog
-          item={selectedInventoryItem} 
+          item={selectedInventoryItem}
           isOpen={modalState.isAddToOrderOpen}
-          onClose={() => handleCloseModal('isAddToOrderOpen')} 
+          onClose={() => handleCloseModal('isAddToOrderOpen')}
         />
       )}
 
       {itemToEdit && (
         <EditOrderItemDialog
           isOpen={modalState.isEditOrderItemOpen}
-          onOpenChange={(open) => {
+          onOpenChange={open => {
             if (!open) handleCloseModal('isEditOrderItemOpen');
           }}
           item={itemToEdit}
@@ -363,7 +438,7 @@ function OrderList() {
         />
       )}
 
-      <QuickAddItemDialog 
+      <QuickAddItemDialog
         isOpen={isQuickAddOpen}
         onClose={() => setIsQuickAddOpen(false)}
         onSuccess={handleQuickAddSuccess}
@@ -380,7 +455,6 @@ function OrderList() {
           onReorderSuccess={handleReorderSuccess}
         />
       )}
-
     </div>
   );
 }

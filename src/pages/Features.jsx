@@ -1,9 +1,9 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import Navigation from "@/components/Navigation";
-import Footer from "@/components/Footer";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import Navigation from '@/components/Navigation';
+import Footer from '@/components/Footer';
 import {
   ArrowRight,
   Package,
@@ -13,94 +13,101 @@ import {
   BarChart2,
   Building2,
   Shield,
-  CheckCircle2
-} from "lucide-react";
+  CheckCircle2,
+} from 'lucide-react';
 
 function Features() {
   const coreFeatures = [
     {
       icon: Package,
-      title: "Smart Inventory Tracking",
-      description: "Log ingredients with units, vendors, categories, and par levels. Get low-stock alerts and automated reorder suggestions.",
+      title: 'Smart Inventory Tracking',
+      description:
+        'Log ingredients with units, vendors, categories, and par levels. Get low-stock alerts and automated reorder suggestions.',
       benefits: [
-        "Track inventory across multiple locations",
-        "Set automatic reorder points",
-        "Monitor vendor pricing and availability",
-        "Reduce food waste with expiration tracking"
-      ]
+        'Track inventory across multiple locations',
+        'Set automatic reorder points',
+        'Monitor vendor pricing and availability',
+        'Reduce food waste with expiration tracking',
+      ],
     },
     {
       icon: Scale,
-      title: "Advanced Prep Management",
-      description: "Create reusable prep items like sauces, stocks, and grains. Automatically deduct raw inventory when prep items are made.",
+      title: 'Advanced Prep Management',
+      description:
+        'Create reusable prep items like sauces, stocks, and grains. Automatically deduct raw inventory when prep items are made.',
       benefits: [
-        "Build prep recipes with automatic costing",
-        "Track prep item shelf life and usage",
-        "Schedule prep tasks by station and shift",
-        "Monitor prep efficiency and labor costs"
-      ]
+        'Build prep recipes with automatic costing',
+        'Track prep item shelf life and usage',
+        'Schedule prep tasks by station and shift',
+        'Monitor prep efficiency and labor costs',
+      ],
     },
     {
       icon: Boxes,
-      title: "Dynamic Recipe Scaling",
-      description: "Build recipes that pull from prep items or raw inventory. Auto-calculate portions based on covers or event size.",
+      title: 'Dynamic Recipe Scaling',
+      description:
+        'Build recipes that pull from prep items or raw inventory. Auto-calculate portions based on covers or event size.',
       benefits: [
-        "Scale recipes for any event size",
-        "Automatic ingredient calculations",
-        "Cost analysis per portion",
-        "Nutritional information tracking"
-      ]
-    }
+        'Scale recipes for any event size',
+        'Automatic ingredient calculations',
+        'Cost analysis per portion',
+        'Nutritional information tracking',
+      ],
+    },
   ];
 
   const aiFeatures = [
     {
       icon: Brain,
-      title: "Smart Suggestions",
-      description: "AI analyzes your kitchen patterns to provide intelligent recommendations on prep schedules, ordering, and waste reduction.",
+      title: 'Smart Suggestions',
+      description:
+        'AI analyzes your kitchen patterns to provide intelligent recommendations on prep schedules, ordering, and waste reduction.',
       benefits: [
-        "Predictive ordering based on historical data",
-        "Optimal prep scheduling recommendations",
-        "Waste reduction strategies",
-        "Menu optimization insights"
-      ]
+        'Predictive ordering based on historical data',
+        'Optimal prep scheduling recommendations',
+        'Waste reduction strategies',
+        'Menu optimization insights',
+      ],
     },
     {
       icon: BarChart2,
-      title: "Performance Analytics",
-      description: "Track key metrics like food costs, waste percentages, and prep efficiency across your entire operation.",
+      title: 'Performance Analytics',
+      description:
+        'Track key metrics like food costs, waste percentages, and prep efficiency across your entire operation.',
       benefits: [
-        "Real-time cost tracking",
-        "Waste pattern analysis",
-        "Staff productivity insights",
-        "Profit margin optimization"
-      ]
-    }
+        'Real-time cost tracking',
+        'Waste pattern analysis',
+        'Staff productivity insights',
+        'Profit margin optimization',
+      ],
+    },
   ];
 
   const enterpriseFeatures = [
     {
       icon: Building2,
-      title: "Unified Dashboard",
-      description: "Manage multiple locations from a single dashboard with shared inventory pools and centralized reporting.",
+      title: 'Unified Dashboard',
+      description:
+        'Manage multiple locations from a single dashboard with shared inventory pools and centralized reporting.',
       benefits: [
-        "Cross-location inventory transfers",
-        "Standardized recipes across sites",
-        "Consolidated vendor management",
-        "Corporate-level reporting"
-      ]
+        'Cross-location inventory transfers',
+        'Standardized recipes across sites',
+        'Consolidated vendor management',
+        'Corporate-level reporting',
+      ],
     },
     {
       icon: Shield,
-      title: "Role-Based Access",
-      description: "Control who can access what information with granular permissions for different staff levels.",
+      title: 'Role-Based Access',
+      description:
+        'Control who can access what information with granular permissions for different staff levels.',
       benefits: [
-        "Manager, chef, and staff access levels",
-        "Location-specific permissions",
-        "Audit trails for all changes",
-        "Secure data protection"
-      ]
-    }
+        'Manager, chef, and staff access levels',
+        'Location-specific permissions',
+        'Audit trails for all changes',
+        'Secure data protection',
+      ],
+    },
   ];
 
   return (
@@ -122,8 +129,10 @@ function Features() {
                 <span className="text-primary"> As Hard As You Do</span>
               </h1>
               <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
-                Comprehensive kitchen management tools designed for modern food service operations.
-                From inventory tracking to AI-powered suggestions, xhef.io provides everything you need to run your kitchen like a pro.
+                Comprehensive kitchen management tools designed for modern food
+                service operations. From inventory tracking to AI-powered
+                suggestions, xhef.io provides everything you need to run your
+                kitchen like a pro.
               </p>
             </motion.div>
           </div>
@@ -132,7 +141,9 @@ function Features() {
         {/* Core Kitchen Management */}
         <section className="py-16 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-16">Core Kitchen Management</h2>
+            <h2 className="text-3xl font-bold text-center mb-16">
+              Core Kitchen Management
+            </h2>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {coreFeatures.map((feature, index) => (
                 <motion.div
@@ -153,7 +164,10 @@ function Features() {
                   </p>
                   <ul className="space-y-2">
                     {feature.benefits.map((benefit, benefitIndex) => (
-                      <li key={benefitIndex} className="flex items-start text-gray-600 dark:text-gray-300">
+                      <li
+                        key={benefitIndex}
+                        className="flex items-start text-gray-600 dark:text-gray-300"
+                      >
                         <CheckCircle2 className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
                         {benefit}
                       </li>
@@ -168,7 +182,9 @@ function Features() {
         {/* AI-Powered Intelligence */}
         <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-900">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-16">AI-Powered Intelligence</h2>
+            <h2 className="text-3xl font-bold text-center mb-16">
+              AI-Powered Intelligence
+            </h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {aiFeatures.map((feature, index) => (
                 <motion.div
@@ -189,7 +205,10 @@ function Features() {
                   </p>
                   <ul className="space-y-2">
                     {feature.benefits.map((benefit, benefitIndex) => (
-                      <li key={benefitIndex} className="flex items-start text-gray-600 dark:text-gray-300">
+                      <li
+                        key={benefitIndex}
+                        className="flex items-start text-gray-600 dark:text-gray-300"
+                      >
                         <CheckCircle2 className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
                         {benefit}
                       </li>
@@ -204,7 +223,9 @@ function Features() {
         {/* Multi-Location Management */}
         <section className="py-16 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-16">Multi-Location Management</h2>
+            <h2 className="text-3xl font-bold text-center mb-16">
+              Multi-Location Management
+            </h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {enterpriseFeatures.map((feature, index) => (
                 <motion.div
@@ -225,7 +246,10 @@ function Features() {
                   </p>
                   <ul className="space-y-2">
                     {feature.benefits.map((benefit, benefitIndex) => (
-                      <li key={benefitIndex} className="flex items-start text-gray-600 dark:text-gray-300">
+                      <li
+                        key={benefitIndex}
+                        className="flex items-start text-gray-600 dark:text-gray-300"
+                      >
                         <CheckCircle2 className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
                         {benefit}
                       </li>
@@ -240,9 +264,12 @@ function Features() {
         {/* Call to Action */}
         <section className="py-20 px-4 sm:px-6 lg:px-8 bg-primary text-white">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-4">Ready to Transform Your Kitchen Operations?</h2>
+            <h2 className="text-3xl font-bold mb-4">
+              Ready to Transform Your Kitchen Operations?
+            </h2>
             <p className="text-xl mb-8 opacity-90">
-              Join hundreds of kitchens already using xhef.io to streamline their operations and reduce costs.
+              Join hundreds of kitchens already using xhef.io to streamline
+              their operations and reduce costs.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Link to="/signup">
@@ -252,7 +279,11 @@ function Features() {
                 </Button>
               </Link>
               <Link to="/demo">
-                <Button size="lg" variant="outline" className="text-lg px-8 border-white text-white hover:bg-white hover:text-primary">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="text-lg px-8 border-white text-white hover:bg-white hover:text-primary"
+                >
                   Schedule Demo
                 </Button>
               </Link>

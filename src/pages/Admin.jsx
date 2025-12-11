@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { useSupabase } from "@/contexts/SupabaseContext";
-import CategoryManager from "@/components/inventory/CategoryManager";
-import VendorManager from "@/components/inventory/VendorManager";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { useSupabase } from '@/contexts/SupabaseContext';
+import CategoryManager from '@/components/inventory/CategoryManager';
+import VendorManager from '@/components/inventory/VendorManager';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 function Admin() {
   const [categories, setCategories] = useState([]);
@@ -44,7 +44,9 @@ function Admin() {
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Admin Settings</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          Admin Settings
+        </h1>
       </div>
 
       <motion.div
@@ -64,10 +66,7 @@ function Admin() {
             />
           </TabsContent>
           <TabsContent value="vendors">
-            <VendorManager
-              vendors={vendors}
-              onVendorsChange={setVendors}
-            />
+            <VendorManager vendors={vendors} onVendorsChange={setVendors} />
           </TabsContent>
         </Tabs>
       </motion.div>

@@ -1,11 +1,20 @@
-import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
-import { useSupabase } from "@/contexts/SupabaseContext";
-import { Plus, Book, Search, Edit2, Trash2, DollarSign, ChevronDown, ChevronUp } from "lucide-react";
-import RecipeForm from "@/components/recipes/RecipeForm";
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useToast } from '@/components/ui/use-toast';
+import { useSupabase } from '@/contexts/SupabaseContext';
+import {
+  Plus,
+  Book,
+  Search,
+  Edit2,
+  Trash2,
+  DollarSign,
+  ChevronDown,
+  ChevronUp,
+} from 'lucide-react';
+import RecipeForm from '@/components/recipes/RecipeForm';
 import {
   Dialog,
   DialogContent,
@@ -13,7 +22,7 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 
 function Recipes() {
   const [recipes, setRecipes] = useState([]);
@@ -22,7 +31,7 @@ function Recipes() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const [expandedRecipes, setExpandedRecipes] = useState(new Set());
   const { supabase, userId } = useSupabase();
   const { toast } = useToast();
@@ -35,7 +44,8 @@ function Recipes() {
     try {
       const { data: recipesData, error: recipesError } = await supabase
         .from('recipes')
-        .select(`
+        .select(
+          `
           *,
           recipe_ingredients (
             *,
@@ -62,43 +72,53 @@ function Recipes() {
               )
             )
           )
-        `)
+        `
+        )
         .eq('user_id', userId)
         .order('name');
 
       if (recipesError) throw recipesError;
 
       // Calculate costs for each recipe
-      const recipesWithCosts = recipesData.map((recipe) => {
+      const recipesWithCosts = recipesData.map(recipe => {
         let totalCost = 0;
 
         // Calculate cost from direct ingredients
-        for (const ingredient of (recipe.recipe_ingredients || [])) {
-          const price = ingredient.inventory_items?.default_price || ingredient.inventory_items?.last_price || 0;
+        for (const ingredient of recipe.recipe_ingredients || []) {
+          const price =
+            ingredient.inventory_items?.default_price ||
+            ingredient.inventory_items?.last_price ||
+            0;
           totalCost += price * ingredient.quantity;
         }
 
         // Calculate cost from prep items
-        for (const prepItem of (recipe.recipe_prep_items || [])) {
-          const prepItemIngredients = prepItem.prep_items?.prep_item_ingredients || [];
+        for (const prepItem of recipe.recipe_prep_items || []) {
+          const prepItemIngredients =
+            prepItem.prep_items?.prep_item_ingredients || [];
           const prepItemCost = prepItemIngredients.reduce((sum, ingredient) => {
-            const price = ingredient.inventory_items?.default_price || ingredient.inventory_items?.last_price || 0;
-            return sum + (price * ingredient.quantity);
+            const price =
+              ingredient.inventory_items?.default_price ||
+              ingredient.inventory_items?.last_price ||
+              0;
+            return sum + price * ingredient.quantity;
           }, 0);
-          
+
           // Scale the prep item cost based on the quantity used in the recipe
           const scaledPrepItemCost = prepItemCost * prepItem.quantity;
           totalCost += scaledPrepItemCost;
         }
 
         const costPerPortion = totalCost / recipe.portions;
-        const foodCostPercentage = recipe.target_price ? (costPerPortion / recipe.target_price) * 100 : 0;
+        const foodCostPercentage = recipe.target_price
+          ? (costPerPortion / recipe.target_price) * 100
+          : 0;
 
         return {
           ...recipe,
           totalCost,
           costPerPortion,
-          foodCostPercentage
+          foodCostPercentage,
         };
       });
 
@@ -106,19 +126,19 @@ function Recipes() {
     } catch (error) {
       console.error('Error fetching recipes:', error);
       toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to fetch recipes. Please try again.",
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to fetch recipes. Please try again.',
       });
     }
   };
 
-  const handleEditClick = (recipe) => {
+  const handleEditClick = recipe => {
     setSelectedRecipe(recipe);
     setIsEditDialogOpen(true);
   };
 
-  const handleDeleteClick = (recipe) => {
+  const handleDeleteClick = recipe => {
     setSelectedRecipe(recipe);
     setIsDeleteDialogOpen(true);
   };
@@ -137,25 +157,25 @@ function Recipes() {
       if (error) throw error;
 
       toast({
-        title: "Success",
-        description: "Recipe deleted successfully",
+        title: 'Success',
+        description: 'Recipe deleted successfully',
       });
-      
+
       setIsDeleteDialogOpen(false);
       fetchRecipes();
     } catch (error) {
       console.error('Error deleting recipe:', error);
       toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to delete recipe. Please try again.",
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to delete recipe. Please try again.',
       });
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const toggleRecipeExpansion = (recipeId) => {
+  const toggleRecipeExpansion = recipeId => {
     const newExpanded = new Set(expandedRecipes);
     if (newExpanded.has(recipeId)) {
       newExpanded.delete(recipeId);
@@ -165,10 +185,10 @@ function Recipes() {
     setExpandedRecipes(newExpanded);
   };
 
-  const getFoodCostColor = (percentage) => {
-    if (percentage > 33) return "text-red-500";
-    if (percentage > 28) return "text-yellow-500";
-    return "text-green-500";
+  const getFoodCostColor = percentage => {
+    if (percentage > 33) return 'text-red-500';
+    if (percentage > 28) return 'text-yellow-500';
+    return 'text-green-500';
   };
 
   const filteredRecipes = recipes.filter(recipe =>
@@ -189,7 +209,7 @@ function Recipes() {
               type="text"
               placeholder="Search recipes..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={e => setSearchQuery(e.target.value)}
               className="pl-10"
             />
           </div>
@@ -201,7 +221,7 @@ function Recipes() {
       </div>
 
       <div className="grid grid-cols-1 gap-4">
-        {filteredRecipes.map((recipe) => (
+        {filteredRecipes.map(recipe => (
           <motion.div
             key={recipe.id}
             initial={{ opacity: 0, y: 20 }}
@@ -231,18 +251,28 @@ function Recipes() {
                 </div>
                 <div className="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div className="flex items-center">
-                    <span className="text-sm text-gray-500 mr-2">Portions:</span>
+                    <span className="text-sm text-gray-500 mr-2">
+                      Portions:
+                    </span>
                     <span className="font-medium">{recipe.portions}</span>
                   </div>
                   <div className="flex items-center">
                     <DollarSign className="w-4 h-4 text-gray-500 mr-1" />
-                    <span className="text-sm text-gray-500 mr-2">Cost/Portion:</span>
-                    <span className="font-medium">${recipe.costPerPortion.toFixed(2)}</span>
+                    <span className="text-sm text-gray-500 mr-2">
+                      Cost/Portion:
+                    </span>
+                    <span className="font-medium">
+                      ${recipe.costPerPortion.toFixed(2)}
+                    </span>
                   </div>
                   {recipe.target_price && (
                     <div className="flex items-center">
-                      <span className="text-sm text-gray-500 mr-2">Food Cost:</span>
-                      <span className={`font-medium ${getFoodCostColor(recipe.foodCostPercentage)}`}>
+                      <span className="text-sm text-gray-500 mr-2">
+                        Food Cost:
+                      </span>
+                      <span
+                        className={`font-medium ${getFoodCostColor(recipe.foodCostPercentage)}`}
+                      >
                         {recipe.foodCostPercentage.toFixed(1)}%
                       </span>
                     </div>
@@ -262,13 +292,13 @@ function Recipes() {
               ) : (
                 <ChevronDown className="w-4 h-4 mr-2" />
               )}
-              {expandedRecipes.has(recipe.id) ? "Hide Details" : "Show Details"}
+              {expandedRecipes.has(recipe.id) ? 'Hide Details' : 'Show Details'}
             </Button>
 
             {expandedRecipes.has(recipe.id) && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
+                animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
                 className="mt-4 space-y-4"
               >
@@ -277,7 +307,7 @@ function Recipes() {
                     <div className="border-t pt-4">
                       <h4 className="font-medium mb-2">Raw Ingredients:</h4>
                       <div className="grid gap-2">
-                        {recipe.recipe_ingredients.map((item) => (
+                        {recipe.recipe_ingredients.map(item => (
                           <div
                             key={item.id}
                             className="flex justify-between items-center text-sm"
@@ -294,7 +324,7 @@ function Recipes() {
                     <div className="border-t pt-4">
                       <h4 className="font-medium mb-2">Prep Items:</h4>
                       <div className="grid gap-2">
-                        {recipe.recipe_prep_items.map((item) => (
+                        {recipe.recipe_prep_items.map(item => (
                           <div
                             key={item.id}
                             className="flex justify-between items-center text-sm"
@@ -314,28 +344,39 @@ function Recipes() {
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
                         <span>Total Recipe Cost:</span>
-                        <span className="font-medium">${recipe.totalCost.toFixed(2)}</span>
+                        <span className="font-medium">
+                          ${recipe.totalCost.toFixed(2)}
+                        </span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span>Cost per Portion:</span>
-                        <span className="font-medium">${recipe.costPerPortion.toFixed(2)}</span>
+                        <span className="font-medium">
+                          ${recipe.costPerPortion.toFixed(2)}
+                        </span>
                       </div>
                       {recipe.target_price && (
                         <>
                           <div className="flex justify-between text-sm">
                             <span>Target Price:</span>
-                            <span className="font-medium">${recipe.target_price.toFixed(2)}</span>
+                            <span className="font-medium">
+                              ${recipe.target_price.toFixed(2)}
+                            </span>
                           </div>
                           <div className="flex justify-between text-sm">
                             <span>Food Cost %:</span>
-                            <span className={`font-medium ${getFoodCostColor(recipe.foodCostPercentage)}`}>
+                            <span
+                              className={`font-medium ${getFoodCostColor(recipe.foodCostPercentage)}`}
+                            >
                               {recipe.foodCostPercentage.toFixed(1)}%
                             </span>
                           </div>
                           <div className="flex justify-between text-sm">
                             <span>Profit per Portion:</span>
                             <span className="font-medium">
-                              ${(recipe.target_price - recipe.costPerPortion).toFixed(2)}
+                              $
+                              {(
+                                recipe.target_price - recipe.costPerPortion
+                              ).toFixed(2)}
                             </span>
                           </div>
                         </>
@@ -383,7 +424,8 @@ function Recipes() {
           <DialogHeader>
             <DialogTitle>Delete Recipe</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete this recipe? This action cannot be undone.
+              Are you sure you want to delete this recipe? This action cannot be
+              undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -399,7 +441,7 @@ function Recipes() {
               onClick={handleDeleteRecipe}
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Deleting..." : "Delete"}
+              {isSubmitting ? 'Deleting...' : 'Delete'}
             </Button>
           </DialogFooter>
         </DialogContent>

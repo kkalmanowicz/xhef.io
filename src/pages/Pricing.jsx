@@ -1,10 +1,10 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import Navigation from "@/components/Navigation";
-import Footer from "@/components/Footer";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import Navigation from '@/components/Navigation';
+import Footer from '@/components/Footer';
+import { ArrowRight, CheckCircle2 } from 'lucide-react';
 
 function Pricing() {
   return (
@@ -26,8 +26,9 @@ function Pricing() {
                 <span className="text-primary"> for Every Kitchen</span>
               </h1>
               <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
-                We're still finalizing our pricing structure based on feedback from restaurant professionals.
-                Join our early access program to get special launch pricing.
+                We're still finalizing our pricing structure based on feedback
+                from restaurant professionals. Join our early access program to
+                get special launch pricing.
               </p>
             </motion.div>
           </div>
@@ -41,8 +42,9 @@ function Pricing() {
                 Pricing Plans Coming Soon
               </h2>
               <p className="text-lg text-gray-600 dark:text-gray-300 mb-8">
-                We're working with restaurant professionals to create pricing that makes sense for your business.
-                Our goal is to offer flexible plans that scale with your operation.
+                We're working with restaurant professionals to create pricing
+                that makes sense for your business. Our goal is to offer
+                flexible plans that scale with your operation.
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -50,7 +52,9 @@ function Pricing() {
                   <div className="h-16 w-16 bg-primary/10 rounded-lg flex items-center justify-center mb-4 mx-auto">
                     <CheckCircle2 className="h-8 w-8 text-primary" />
                   </div>
-                  <h3 className="font-semibold text-gray-900 dark:text-white">Starter Plan</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">
+                    Starter Plan
+                  </h3>
                   <p className="text-gray-600 dark:text-gray-300 text-sm mt-2">
                     Perfect for single-location restaurants
                   </p>
@@ -59,7 +63,9 @@ function Pricing() {
                   <div className="h-16 w-16 bg-primary/10 rounded-lg flex items-center justify-center mb-4 mx-auto">
                     <CheckCircle2 className="h-8 w-8 text-primary" />
                   </div>
-                  <h3 className="font-semibold text-gray-900 dark:text-white">Professional Plan</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">
+                    Professional Plan
+                  </h3>
                   <p className="text-gray-600 dark:text-gray-300 text-sm mt-2">
                     Advanced features for growing operations
                   </p>
@@ -68,7 +74,9 @@ function Pricing() {
                   <div className="h-16 w-16 bg-primary/10 rounded-lg flex items-center justify-center mb-4 mx-auto">
                     <CheckCircle2 className="h-8 w-8 text-primary" />
                   </div>
-                  <h3 className="font-semibold text-gray-900 dark:text-white">Enterprise Plan</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">
+                    Enterprise Plan
+                  </h3>
                   <p className="text-gray-600 dark:text-gray-300 text-sm mt-2">
                     Custom solutions for multi-location chains
                   </p>
@@ -76,7 +84,9 @@ function Pricing() {
               </div>
 
               <div className="bg-primary/5 rounded-lg p-6 mb-8">
-                <h3 className="font-semibold text-primary mb-2">Early Access Benefits</h3>
+                <h3 className="font-semibold text-primary mb-2">
+                  Early Access Benefits
+                </h3>
                 <ul className="text-left space-y-2 text-gray-600 dark:text-gray-300">
                   <li className="flex items-center">
                     <CheckCircle2 className="h-5 w-5 text-green-500 mr-2" />

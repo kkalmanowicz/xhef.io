@@ -1,24 +1,25 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSupabase } from '@/contexts/SupabaseContext';
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from '@/components/ui/use-toast';
 
-const usePrepItemForm = (existingItem) => {
+const usePrepItemForm = existingItem => {
   const { supabase, userId } = useSupabase();
   const { toast } = useToast();
-  
+
   const [formData, setFormData] = useState({
-    name: existingItem?.name || "",
-    station: existingItem?.station || "other",
+    name: existingItem?.name || '',
+    station: existingItem?.station || 'other',
     current_stock: existingItem?.current_stock || 0,
     par_level: existingItem?.par_level || 0,
-    yield_unit: existingItem?.yield_unit || "units",
-    notes: existingItem?.notes || "",
-    ingredients: existingItem?.prep_item_ingredients?.map(ing => ({
-      inventory_item_id: ing.inventory_item_id,
-      quantity: ing.quantity,
-      unit: ing.unit,
-      id: ing.id 
-    })) || []
+    yield_unit: existingItem?.yield_unit || 'units',
+    notes: existingItem?.notes || '',
+    ingredients:
+      existingItem?.prep_item_ingredients?.map(ing => ({
+        inventory_item_id: ing.inventory_item_id,
+        quantity: ing.quantity,
+        unit: ing.unit,
+        id: ing.id,
+      })) || [],
   });
   const [inventoryItems, setInventoryItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -34,7 +35,11 @@ const usePrepItemForm = (existingItem) => {
       setInventoryItems(data || []);
     } catch (error) {
       console.error('Error fetching inventory items:', error);
-      toast({ variant: "destructive", title: "Error", description: "Failed to fetch inventory items." });
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to fetch inventory items.',
+      });
     }
   }, [supabase, userId, toast]);
 
@@ -51,44 +56,60 @@ const usePrepItemForm = (existingItem) => {
       ...prev,
       ingredients: [
         ...prev.ingredients,
-        { inventory_item_id: "", quantity: 0, unit: "units" }
-      ]
+        { inventory_item_id: '', quantity: 0, unit: 'units' },
+      ],
     }));
   };
 
-  const handleRemoveIngredient = (index) => {
+  const handleRemoveIngredient = index => {
     setFormData(prev => ({
       ...prev,
-      ingredients: prev.ingredients.filter((_, i) => i !== index)
+      ingredients: prev.ingredients.filter((_, i) => i !== index),
     }));
   };
 
   const handleIngredientChange = (index, field, value) => {
     setFormData(prev => ({
       ...prev,
-      ingredients: prev.ingredients.map((ing, i) => 
+      ingredients: prev.ingredients.map((ing, i) =>
         i === index ? { ...ing, [field]: value } : ing
-      )
+      ),
     }));
   };
 
   const validateForm = () => {
     if (!formData.name.trim()) {
-      toast({ variant: "destructive", title: "Validation Error", description: "Prep item name is required."});
+      toast({
+        variant: 'destructive',
+        title: 'Validation Error',
+        description: 'Prep item name is required.',
+      });
       return false;
     }
     if (formData.ingredients.length > 0) {
       for (const ing of formData.ingredients) {
         if (!ing.inventory_item_id) {
-          toast({ variant: "destructive", title: "Validation Error", description: "Please select an item for each ingredient."});
+          toast({
+            variant: 'destructive',
+            title: 'Validation Error',
+            description: 'Please select an item for each ingredient.',
+          });
           return false;
         }
         if (parseFloat(ing.quantity) <= 0) {
-          toast({ variant: "destructive", title: "Validation Error", description: "Ingredient quantity must be greater than 0."});
+          toast({
+            variant: 'destructive',
+            title: 'Validation Error',
+            description: 'Ingredient quantity must be greater than 0.',
+          });
           return false;
         }
         if (!ing.unit) {
-          toast({ variant: "destructive", title: "Validation Error", description: "Please select a unit for each ingredient."});
+          toast({
+            variant: 'destructive',
+            title: 'Validation Error',
+            description: 'Please select a unit for each ingredient.',
+          });
           return false;
         }
       }
@@ -104,7 +125,7 @@ const usePrepItemForm = (existingItem) => {
     if (stock < par) return 'needed';
     return 'not-needed';
   };
-  
+
   const upsertPrepItem = async () => {
     const status = calculateStatus(formData.current_stock, formData.par_level);
     const prepItemPayload = {
@@ -116,7 +137,7 @@ const usePrepItemForm = (existingItem) => {
       notes: formData.notes,
       status,
       user_id: userId,
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
     };
 
     if (existingItem?.id) {
@@ -136,12 +157,15 @@ const usePrepItemForm = (existingItem) => {
         .select('id')
         .single();
       if (error) throw error;
-      if (!data || !data.id) throw new Error("Failed to create prep item: No ID returned from database.");
+      if (!data || !data.id)
+        throw new Error(
+          'Failed to create prep item: No ID returned from database.'
+        );
       return data.id;
     }
   };
 
-  const manageIngredients = async (prepItemId) => {
+  const manageIngredients = async prepItemId => {
     if (existingItem?.id) {
       const { error: deleteError } = await supabase
         .from('prep_item_ingredients')
@@ -157,7 +181,7 @@ const usePrepItemForm = (existingItem) => {
         inventory_item_id: ing.inventory_item_id,
         quantity: parseFloat(ing.quantity) || 0,
         unit: ing.unit,
-        user_id: userId
+        user_id: userId,
       }));
       const { error: ingredientsError } = await supabase
         .from('prep_item_ingredients')
@@ -172,12 +196,21 @@ const usePrepItemForm = (existingItem) => {
     try {
       const prepItemId = await upsertPrepItem();
       await manageIngredients(prepItemId);
-      toast({ title: "Success", description: `Prep item ${existingItem?.id ? 'updated' : 'created'} successfully!` });
+      toast({
+        title: 'Success',
+        description: `Prep item ${existingItem?.id ? 'updated' : 'created'} successfully!`,
+      });
       setIsLoading(false);
-      return true; 
+      return true;
     } catch (error) {
       console.error('Error saving prep item:', error);
-      toast({ variant: "destructive", title: "Error", description: error.message || `Failed to ${existingItem?.id ? 'update' : 'create'} prep item.` });
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description:
+          error.message ||
+          `Failed to ${existingItem?.id ? 'update' : 'create'} prep item.`,
+      });
       setIsLoading(false);
       return false;
     }
@@ -191,7 +224,7 @@ const usePrepItemForm = (existingItem) => {
     handleAddIngredient,
     handleRemoveIngredient,
     handleIngredientChange,
-    handleSubmit
+    handleSubmit,
   };
 };
 

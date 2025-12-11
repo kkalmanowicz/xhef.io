@@ -1,16 +1,10 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import Navigation from "@/components/Navigation";
-import Footer from "@/components/Footer";
-import {
-  ArrowRight,
-  Mail,
-  MessageCircle,
-  Users,
-  Clock
-} from "lucide-react";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import Navigation from '@/components/Navigation';
+import Footer from '@/components/Footer';
+import { ArrowRight, Mail, MessageCircle, Users, Clock } from 'lucide-react';
 
 function Contact() {
   return (
@@ -32,8 +26,8 @@ function Contact() {
                 <span className="text-primary"> Touch</span>
               </h1>
               <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
-                Have questions about xhef.io? Want to provide feedback on our development process?
-                We'd love to hear from you.
+                Have questions about xhef.io? Want to provide feedback on our
+                development process? We'd love to hear from you.
               </p>
             </motion.div>
           </div>
@@ -59,8 +53,12 @@ function Contact() {
                   Ready to see xhef.io in action?
                 </p>
                 <div className="space-y-2 text-sm">
-                  <p className="text-gray-600 dark:text-gray-300">sales@xhef.io</p>
-                  <p className="text-gray-600 dark:text-gray-300">(555) 123-4567</p>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    sales@xhef.io
+                  </p>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    (555) 123-4567
+                  </p>
                 </div>
               </motion.div>
 
@@ -80,8 +78,12 @@ function Contact() {
                   Questions about our platform?
                 </p>
                 <div className="space-y-2 text-sm">
-                  <p className="text-gray-600 dark:text-gray-300">hello@xhef.io</p>
-                  <p className="text-gray-600 dark:text-gray-300">Response within 24 hours</p>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    hello@xhef.io
+                  </p>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    Response within 24 hours
+                  </p>
                 </div>
               </motion.div>
 
@@ -101,8 +103,12 @@ function Contact() {
                   Interested in partnering with us?
                 </p>
                 <div className="space-y-2 text-sm">
-                  <p className="text-gray-600 dark:text-gray-300">partnerships@xhef.io</p>
-                  <p className="text-gray-600 dark:text-gray-300">Strategic collaborations</p>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    partnerships@xhef.io
+                  </p>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    Strategic collaborations
+                  </p>
                 </div>
               </motion.div>
 
@@ -122,8 +128,12 @@ function Contact() {
                   Help us build better features
                 </p>
                 <div className="space-y-2 text-sm">
-                  <p className="text-gray-600 dark:text-gray-300">feedback@xhef.io</p>
-                  <p className="text-gray-600 dark:text-gray-300">Product suggestions</p>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    feedback@xhef.io
+                  </p>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    Product suggestions
+                  </p>
                 </div>
               </motion.div>
             </div>
@@ -143,10 +153,17 @@ function Contact() {
             </div>
 
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
-              <form action="https://formspree.io/f/your-contact-form-id" method="POST" className="space-y-6">
+              <form
+                action="https://formspree.io/f/your-contact-form-id"
+                method="POST"
+                className="space-y-6"
+              >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label
+                      htmlFor="firstName"
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                    >
                       First Name *
                     </label>
                     <input
@@ -158,7 +175,10 @@ function Contact() {
                     />
                   </div>
                   <div>
-                    <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label
+                      htmlFor="lastName"
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                    >
                       Last Name *
                     </label>
                     <input
@@ -172,7 +192,10 @@ function Contact() {
                 </div>
 
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  >
                     Email Address *
                   </label>
                   <input
@@ -185,7 +208,10 @@ function Contact() {
                 </div>
 
                 <div>
-                  <label htmlFor="company" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label
+                    htmlFor="company"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  >
                     Company/Restaurant (Optional)
                   </label>
                   <input
@@ -197,7 +223,10 @@ function Contact() {
                 </div>
 
                 <div>
-                  <label htmlFor="inquiryType" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label
+                    htmlFor="inquiryType"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  >
                     Inquiry Type *
                   </label>
                   <select
@@ -217,7 +246,10 @@ function Contact() {
                 </div>
 
                 <div>
-                  <label htmlFor="subject" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label
+                    htmlFor="subject"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  >
                     Subject *
                   </label>
                   <input
@@ -230,7 +262,10 @@ function Contact() {
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label
+                    htmlFor="message"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  >
                     Message *
                   </label>
                   <textarea
@@ -250,7 +285,8 @@ function Contact() {
               </form>
 
               <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-4">
-                We'll respond within 24 hours. For urgent matters, please call us directly.
+                We'll respond within 24 hours. For urgent matters, please call
+                us directly.
               </p>
             </div>
           </div>
@@ -261,7 +297,8 @@ function Contact() {
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
             <p className="text-xl mb-8 opacity-90">
-              Join our early access program and be among the first to experience the future of kitchen management.
+              Join our early access program and be among the first to experience
+              the future of kitchen management.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Link to="/signup">
@@ -271,7 +308,11 @@ function Contact() {
                 </Button>
               </Link>
               <Link to="/demo">
-                <Button size="lg" variant="outline" className="text-lg px-8 border-white text-white hover:bg-white hover:text-primary">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="text-lg px-8 border-white text-white hover:bg-white hover:text-primary"
+                >
                   Schedule Demo
                 </Button>
               </Link>

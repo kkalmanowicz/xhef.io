@@ -1,9 +1,9 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import Navigation from "@/components/Navigation";
-import Footer from "@/components/Footer";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import Navigation from '@/components/Navigation';
+import Footer from '@/components/Footer';
 import {
   ArrowRight,
   Clock,
@@ -11,70 +11,74 @@ import {
   Users,
   Calculator,
   CheckCircle2,
-  PlayCircle
-} from "lucide-react";
+  PlayCircle,
+} from 'lucide-react';
 
 function Demo() {
   const benefits = [
     {
       icon: Clock,
-      title: "Quick 30-Minute Session",
-      description: "We respect your busy schedule. Our demos are focused and efficient."
+      title: 'Quick 30-Minute Session',
+      description:
+        'We respect your busy schedule. Our demos are focused and efficient.',
     },
     {
       icon: Target,
-      title: "Tailored to Your Needs",
-      description: "We'll customize the demo based on your specific operation type and challenges."
+      title: 'Tailored to Your Needs',
+      description:
+        "We'll customize the demo based on your specific operation type and challenges.",
     },
     {
       icon: Users,
-      title: "Bring Your Team",
-      description: "Include key staff members to see how each role benefits from xhef.io."
+      title: 'Bring Your Team',
+      description:
+        'Include key staff members to see how each role benefits from xhef.io.',
     },
     {
       icon: Calculator,
-      title: "ROI Analysis",
-      description: "We'll show you potential savings and efficiency gains for your specific operation."
-    }
+      title: 'ROI Analysis',
+      description:
+        "We'll show you potential savings and efficiency gains for your specific operation.",
+    },
   ];
 
   const demoTypes = [
     {
-      title: "Restaurant Demo",
-      duration: "30 minutes",
-      description: "Perfect for single or multi-location restaurants",
+      title: 'Restaurant Demo',
+      duration: '30 minutes',
+      description: 'Perfect for single or multi-location restaurants',
       includes: [
-        "Inventory management walkthrough",
-        "Prep scheduling and tracking",
-        "Recipe scaling for different service sizes",
-        "Cost analysis and reporting",
-        "Staff workflow optimization"
-      ]
+        'Inventory management walkthrough',
+        'Prep scheduling and tracking',
+        'Recipe scaling for different service sizes',
+        'Cost analysis and reporting',
+        'Staff workflow optimization',
+      ],
     },
     {
-      title: "Catering Demo",
-      duration: "30 minutes",
-      description: "Specialized for catering and event operations",
+      title: 'Catering Demo',
+      duration: '30 minutes',
+      description: 'Specialized for catering and event operations',
       includes: [
-        "Event-based planning and scaling",
-        "Large batch recipe management",
-        "Mobile inventory tracking",
-        "Client-specific reporting",
-        "Equipment and supply planning"
-      ]
+        'Event-based planning and scaling',
+        'Large batch recipe management',
+        'Mobile inventory tracking',
+        'Client-specific reporting',
+        'Equipment and supply planning',
+      ],
     },
     {
-      title: "Enterprise Demo",
-      duration: "45 minutes",
-      description: "Comprehensive demo for large operations",
+      title: 'Enterprise Demo',
+      duration: '45 minutes',
+      description: 'Comprehensive demo for large operations',
       includes: [
-        "Multi-location management",
-        "Corporate reporting and analytics",
-        "Integration capabilities",
-        "Custom workflow setup",
-        "Implementation planning"
-      ]
-    }
+        'Multi-location management',
+        'Corporate reporting and analytics',
+        'Integration capabilities',
+        'Custom workflow setup',
+        'Implementation planning',
+      ],
+    },
   ];
 
   return (
@@ -96,8 +100,9 @@ function Demo() {
                 <span className="text-primary"> in Action</span>
               </h1>
               <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
-                Get a personalized demo tailored to your kitchen's needs.
-                Book a 30-minute demo with our team to see exactly how xhef.io can transform your kitchen operations.
+                Get a personalized demo tailored to your kitchen's needs. Book a
+                30-minute demo with our team to see exactly how xhef.io can
+                transform your kitchen operations.
               </p>
             </motion.div>
           </div>
@@ -133,7 +138,9 @@ function Demo() {
         {/* Demo Types */}
         <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-900">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-16">Choose Your Demo</h2>
+            <h2 className="text-3xl font-bold text-center mb-16">
+              Choose Your Demo
+            </h2>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {demoTypes.map((demo, index) => (
                 <motion.div
@@ -156,7 +163,9 @@ function Demo() {
                     {demo.includes.map((item, itemIndex) => (
                       <div key={itemIndex} className="flex items-start">
                         <CheckCircle2 className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
-                        <span className="text-gray-600 dark:text-gray-300">{item}</span>
+                        <span className="text-gray-600 dark:text-gray-300">
+                          {item}
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -174,15 +183,23 @@ function Demo() {
                 Schedule Your Demo
               </h2>
               <p className="text-xl text-gray-600 dark:text-gray-300">
-                Fill out the form below and we'll contact you within 24 hours to schedule your personalized demo.
+                Fill out the form below and we'll contact you within 24 hours to
+                schedule your personalized demo.
               </p>
             </div>
 
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
-              <form action="https://formspree.io/f/your-demo-form-id" method="POST" className="space-y-6">
+              <form
+                action="https://formspree.io/f/your-demo-form-id"
+                method="POST"
+                className="space-y-6"
+              >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label
+                      htmlFor="firstName"
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                    >
                       First Name *
                     </label>
                     <input
@@ -194,7 +211,10 @@ function Demo() {
                     />
                   </div>
                   <div>
-                    <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label
+                      htmlFor="lastName"
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                    >
                       Last Name *
                     </label>
                     <input
@@ -209,7 +229,10 @@ function Demo() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label
+                      htmlFor="email"
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                    >
                       Email Address *
                     </label>
                     <input
@@ -221,7 +244,10 @@ function Demo() {
                     />
                   </div>
                   <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label
+                      htmlFor="phone"
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                    >
                       Phone Number *
                     </label>
                     <input
@@ -235,7 +261,10 @@ function Demo() {
                 </div>
 
                 <div>
-                  <label htmlFor="company" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label
+                    htmlFor="company"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  >
                     Restaurant/Company Name *
                   </label>
                   <input
@@ -249,7 +278,10 @@ function Demo() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="operationType" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label
+                      htmlFor="operationType"
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                    >
                       Operation Type *
                     </label>
                     <select
@@ -261,13 +293,18 @@ function Demo() {
                       <option value="">Select operation type</option>
                       <option value="restaurant">Restaurant</option>
                       <option value="catering">Catering</option>
-                      <option value="multi-location">Multi-Location Chain</option>
+                      <option value="multi-location">
+                        Multi-Location Chain
+                      </option>
                       <option value="ghost-kitchen">Ghost Kitchen</option>
                       <option value="other">Other</option>
                     </select>
                   </div>
                   <div>
-                    <label htmlFor="locations" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label
+                      htmlFor="locations"
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                    >
                       Number of Locations *
                     </label>
                     <select
@@ -287,7 +324,10 @@ function Demo() {
                 </div>
 
                 <div>
-                  <label htmlFor="preferredTime" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label
+                    htmlFor="preferredTime"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  >
                     Preferred Demo Time *
                   </label>
                   <select
@@ -304,7 +344,10 @@ function Demo() {
                 </div>
 
                 <div>
-                  <label htmlFor="challenges" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label
+                    htmlFor="challenges"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  >
                     Biggest Kitchen Management Challenges (Optional)
                   </label>
                   <textarea
@@ -343,7 +386,11 @@ function Demo() {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
-              <Button size="lg" variant="outline" className="text-lg px-8 border-white text-white hover:bg-white hover:text-primary">
+              <Button
+                size="lg"
+                variant="outline"
+                className="text-lg px-8 border-white text-white hover:bg-white hover:text-primary"
+              >
                 Call Us: (555) 123-4567
               </Button>
             </div>

@@ -20,7 +20,9 @@ export function SupabaseProvider({ children }) {
     // Failsafe timeout - ensure loading never hangs indefinitely
     const failsafeTimeout = setTimeout(() => {
       if (mounted && isLoading) {
-        console.warn('Auth initialization taking too long, proceeding without session');
+        console.warn(
+          'Auth initialization taking too long, proceeding without session'
+        );
         setIsLoading(false);
         setIsInitialized(true);
       }
@@ -34,10 +36,10 @@ export function SupabaseProvider({ children }) {
           setTimeout(() => reject(new Error('Auth timeout')), 10000)
         );
 
-        const { data: { session: initialSession }, error: sessionError } = await Promise.race([
-          sessionPromise,
-          timeoutPromise
-        ]);
+        const {
+          data: { session: initialSession },
+          error: sessionError,
+        } = await Promise.race([sessionPromise, timeoutPromise]);
 
         if (sessionError) throw sessionError;
 
@@ -52,7 +54,9 @@ export function SupabaseProvider({ children }) {
         }
 
         // Set up real-time auth subscription
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
+        const {
+          data: { subscription },
+        } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
           if (mounted) {
             setSession(currentSession);
             setUserId(currentSession?.user?.id || null);
@@ -68,27 +72,28 @@ export function SupabaseProvider({ children }) {
             switch (event) {
               case 'SIGNED_IN':
                 toast({
-                  title: "Welcome back!",
-                  description: "Successfully signed in to your account.",
+                  title: 'Welcome back!',
+                  description: 'Successfully signed in to your account.',
                 });
                 break;
               case 'SIGNED_OUT':
                 toast({
-                  title: "Signed out",
-                  description: "Successfully signed out of your account.",
+                  title: 'Signed out',
+                  description: 'Successfully signed out of your account.',
                 });
                 navigate('/');
                 break;
               case 'USER_UPDATED':
                 toast({
-                  title: "Profile updated",
-                  description: "Your profile has been updated successfully.",
+                  title: 'Profile updated',
+                  description: 'Your profile has been updated successfully.',
                 });
                 break;
               case 'PASSWORD_RECOVERY':
                 toast({
-                  title: "Password recovery",
-                  description: "Please check your email for password reset instructions.",
+                  title: 'Password recovery',
+                  description:
+                    'Please check your email for password reset instructions.',
                 });
                 break;
             }
@@ -109,9 +114,10 @@ export function SupabaseProvider({ children }) {
         console.error('Error initializing auth:', error);
         if (mounted) {
           toast({
-            variant: "destructive",
-            title: "Error",
-            description: "Failed to initialize authentication. Please refresh the page.",
+            variant: 'destructive',
+            title: 'Error',
+            description:
+              'Failed to initialize authentication. Please refresh the page.',
           });
           setIsLoading(false);
           clearTimeout(failsafeTimeout);
@@ -127,27 +133,33 @@ export function SupabaseProvider({ children }) {
     };
   }, []);
 
-  const initializeUserData = async (userId) => {
+  const initializeUserData = async userId => {
     if (!userId) return false;
 
     try {
       // Skip initialization for returning users - only do it for completely new users
       // Check if user has any data at all
-      const { data: existingCategories, error: categoriesError } = await Promise.race([
-        supabase
-          .from('categories')
-          .select('id')
-          .eq('user_id', userId)
-          .limit(1),
-        new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 5000))
-      ]);
+      const { data: existingCategories, error: categoriesError } =
+        await Promise.race([
+          supabase
+            .from('categories')
+            .select('id')
+            .eq('user_id', userId)
+            .limit(1),
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Timeout')), 5000)
+          ),
+        ]);
 
       if (categoriesError && categoriesError.message !== 'Timeout') {
         throw categoriesError;
       }
 
       // If query timed out or user already has data, skip initialization
-      if (categoriesError?.message === 'Timeout' || existingCategories?.length > 0) {
+      if (
+        categoriesError?.message === 'Timeout' ||
+        existingCategories?.length > 0
+      ) {
         return true;
       }
 
@@ -158,13 +170,13 @@ export function SupabaseProvider({ children }) {
         'Dairy',
         'Dry Goods',
         'Beverages',
-        'Supplies'
+        'Supplies',
       ];
 
       const categoryInserts = defaultCategories.map(name => ({
         name,
         user_id: userId,
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
       }));
 
       const { error: insertError } = await supabase
@@ -174,13 +186,11 @@ export function SupabaseProvider({ children }) {
       if (insertError) throw insertError;
 
       // Create default vendor
-      const { error: vendorError } = await supabase
-        .from('vendors')
-        .insert({
-          name: 'General Supplier',
-          user_id: userId,
-          created_at: new Date().toISOString()
-        });
+      const { error: vendorError } = await supabase.from('vendors').insert({
+        name: 'General Supplier',
+        user_id: userId,
+        created_at: new Date().toISOString(),
+      });
 
       if (vendorError) throw vendorError;
 
@@ -195,12 +205,12 @@ export function SupabaseProvider({ children }) {
     }
   };
 
-  const handleError = (error) => {
+  const handleError = error => {
     console.error('Supabase error:', error);
     toast({
-      variant: "destructive",
-      title: "Error",
-      description: error.message || "An unexpected error occurred",
+      variant: 'destructive',
+      title: 'Error',
+      description: error.message || 'An unexpected error occurred',
     });
   };
 
@@ -218,7 +228,7 @@ export function SupabaseProvider({ children }) {
     session,
     handleError,
     userId,
-    isInitialized
+    isInitialized,
   };
 
   return (

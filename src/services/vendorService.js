@@ -13,7 +13,9 @@ export const fetchVendors = async (supabase, userId) => {
 export const addVendor = async (supabase, userId, vendorData) => {
   const { data, error } = await supabase
     .from('vendors')
-    .insert([{ ...vendorData, user_id: userId, created_at: new Date().toISOString() }])
+    .insert([
+      { ...vendorData, user_id: userId, created_at: new Date().toISOString() },
+    ])
     .select()
     .single();
   if (error) throw error;
@@ -41,8 +43,11 @@ export const deleteVendorById = async (supabase, vendorId, userId) => {
     .eq('id', vendorId)
     .eq('user_id', userId);
   if (error) {
-    if (error.code === '23503') { // Foreign key violation
-      throw new Error("Failed to delete vendor. It is likely associated with existing inventory items. Please reassign or delete those items first.");
+    if (error.code === '23503') {
+      // Foreign key violation
+      throw new Error(
+        'Failed to delete vendor. It is likely associated with existing inventory items. Please reassign or delete those items first.'
+      );
     }
     throw error;
   }

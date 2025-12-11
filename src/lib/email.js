@@ -22,14 +22,22 @@ export const emailService = {
               <p><strong>Total Amount:</strong> $${orderDetails.totalAmount}</p>
             </div>
 
-            ${orderDetails.items?.length ? `
+            ${
+              orderDetails.items?.length
+                ? `
               <h3>Items Ordered:</h3>
               <ul>
-                ${orderDetails.items.map(item => `
+                ${orderDetails.items
+                  .map(
+                    item => `
                   <li>${item.name} - ${item.quantity} ${item.unit} @ $${item.unitCost} each</li>
-                `).join('')}
+                `
+                  )
+                  .join('')}
               </ul>
-            ` : ''}
+            `
+                : ''
+            }
 
             <p>You can track this order in your <a href="${import.meta.env.VITE_APP_URL}">xhef.io dashboard</a>.</p>
 
@@ -39,7 +47,7 @@ export const emailService = {
               If you have any questions, please contact support.
             </p>
           </div>
-        `
+        `,
       });
 
       if (error) {
@@ -69,13 +77,17 @@ export const emailService = {
             <div style="background: #fef2f2; padding: 20px; border-radius: 8px; border-left: 4px solid #dc2626; margin: 20px 0;">
               <h3>Items Below Minimum Stock:</h3>
               <ul>
-                ${items.map(item => `
+                ${items
+                  .map(
+                    item => `
                   <li style="margin: 10px 0;">
                     <strong>${item.name}</strong><br>
                     Current: ${item.currentStock} ${item.unit} | Minimum: ${item.minStock} ${item.unit}
                     ${item.vendor ? `<br><em>Vendor: ${item.vendor}</em>` : ''}
                   </li>
-                `).join('')}
+                `
+                  )
+                  .join('')}
               </ul>
             </div>
 
@@ -89,7 +101,7 @@ export const emailService = {
               You can adjust alert thresholds in your settings.
             </p>
           </div>
-        `
+        `,
       });
 
       if (error) {
@@ -137,14 +149,22 @@ export const emailService = {
               </ul>
             </div>
 
-            ${reportData.topUsedItems?.length ? `
+            ${
+              reportData.topUsedItems?.length
+                ? `
               <h3>Most Used Items This Week:</h3>
               <ol>
-                ${reportData.topUsedItems.map(item => `
+                ${reportData.topUsedItems
+                  .map(
+                    item => `
                   <li>${item.name} - ${item.usage} ${item.unit} used</li>
-                `).join('')}
+                `
+                  )
+                  .join('')}
               </ol>
-            ` : ''}
+            `
+                : ''
+            }
 
             <p>View detailed reports in your <a href="${import.meta.env.VITE_APP_URL}">xhef.io dashboard</a>.</p>
 
@@ -154,7 +174,7 @@ export const emailService = {
               You can customize report settings in your dashboard.
             </p>
           </div>
-        `
+        `,
       });
 
       if (error) {
@@ -175,7 +195,8 @@ export const emailService = {
       const { data, error } = await resend.emails.send({
         from: `xhef.io Welcome <welcome@${import.meta.env.VITE_RESEND_DOMAIN || 'resend.dev'}>`,
         to: [to],
-        subject: 'Welcome to xhef.io - Your Kitchen Management Journey Starts Here!',
+        subject:
+          'Welcome to xhef.io - Your Kitchen Management Journey Starts Here!',
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
             <h2 style="color: #2563eb;">🍽️ Welcome to xhef.io!</h2>
@@ -221,7 +242,7 @@ export const emailService = {
               If you didn't create this account, please contact our support team.
             </p>
           </div>
-        `
+        `,
       });
 
       if (error) {
@@ -234,5 +255,5 @@ export const emailService = {
       console.error('Email service error:', error);
       return { success: false, error: error.message };
     }
-  }
+  },
 };

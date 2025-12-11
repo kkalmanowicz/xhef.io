@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { useSupabase } from "@/contexts/SupabaseContext";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
-import { ChefHat, Loader2, ArrowLeft } from "lucide-react";
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { useSupabase } from '@/contexts/SupabaseContext';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useToast } from '@/components/ui/use-toast';
+import { ChefHat, Loader2, ArrowLeft } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -14,20 +14,20 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 
 function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [resetEmail, setResetEmail] = useState("");
+  const [resetEmail, setResetEmail] = useState('');
   const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
   const [isResettingPassword, setIsResettingPassword] = useState(false);
   const { supabase, handleError } = useSupabase();
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleLogin = async e => {
     e.preventDefault();
     setIsLoading(true);
 
@@ -36,7 +36,7 @@ function Login() {
       email: email,
       timestamp: new Date().toISOString(),
       userAgent: navigator.userAgent,
-      url: window.location.href
+      url: window.location.href,
     });
 
     try {
@@ -52,30 +52,39 @@ function Login() {
           error_message: error.message,
           email: email,
           timestamp: new Date().toISOString(),
-          supabase_error: error
+          supabase_error: error,
         });
 
-        let errorMessage = "Invalid email or password";
-        let errorTitle = "Login failed";
+        let errorMessage = 'Invalid email or password';
+        let errorTitle = 'Login failed';
 
         // Enhanced error handling based on Supabase error types
-        if (error.message.includes("Email not confirmed")) {
-          errorMessage = "Please check your email and click the confirmation link before signing in";
-          errorTitle = "Email not confirmed";
-        } else if (error.message.includes("Invalid login credentials")) {
-          errorMessage = "The email or password you entered is incorrect. Please try again.";
-        } else if (error.message.includes("Email not found") || error.message.includes("User not found")) {
-          errorMessage = "No account found with this email address. Please check your email or sign up for a new account.";
-        } else if (error.message.includes("Too many requests")) {
-          errorMessage = "Too many login attempts. Please wait a few minutes before trying again.";
-          errorTitle = "Rate limited";
-        } else if (error.message.includes("Password")) {
-          errorMessage = "Incorrect password. Please check your password and try again.";
+        if (error.message.includes('Email not confirmed')) {
+          errorMessage =
+            'Please check your email and click the confirmation link before signing in';
+          errorTitle = 'Email not confirmed';
+        } else if (error.message.includes('Invalid login credentials')) {
+          errorMessage =
+            'The email or password you entered is incorrect. Please try again.';
+        } else if (
+          error.message.includes('Email not found') ||
+          error.message.includes('User not found')
+        ) {
+          errorMessage =
+            'No account found with this email address. Please check your email or sign up for a new account.';
+        } else if (error.message.includes('Too many requests')) {
+          errorMessage =
+            'Too many login attempts. Please wait a few minutes before trying again.';
+          errorTitle = 'Rate limited';
+        } else if (error.message.includes('Password')) {
+          errorMessage =
+            'Incorrect password. Please check your password and try again.';
         } else if (error.status === 422) {
-          errorMessage = "Please check your email and password format and try again.";
+          errorMessage =
+            'Please check your email and password format and try again.';
         } else if (error.status >= 500) {
-          errorMessage = "Server error. Please try again in a few moments.";
-          errorTitle = "Server error";
+          errorMessage = 'Server error. Please try again in a few moments.';
+          errorTitle = 'Server error';
         }
 
         throw new Error(errorMessage);
@@ -89,25 +98,25 @@ function Login() {
           email_confirmed: data.user.email_confirmed_at !== null,
           created_at: data.user.created_at,
           last_sign_in: data.user.last_sign_in_at,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
         toast({
-          title: "Welcome back!",
-          description: "Successfully logged in to your account.",
+          title: 'Welcome back!',
+          description: 'Successfully logged in to your account.',
         });
-        navigate("/dashboard");
+        navigate('/dashboard');
       }
     } catch (error) {
       console.error('❌ Login failed:', {
         error_message: error.message,
         email: email,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
 
       toast({
-        variant: "destructive",
-        title: "Login failed",
+        variant: 'destructive',
+        title: 'Login failed',
         description: error.message,
         duration: 8000,
       });
@@ -116,7 +125,7 @@ function Login() {
     }
   };
 
-  const handlePasswordReset = async (e) => {
+  const handlePasswordReset = async e => {
     e.preventDefault();
     setIsResettingPassword(true);
 
@@ -128,16 +137,16 @@ function Login() {
       if (error) throw error;
 
       toast({
-        title: "Password reset email sent",
-        description: "Please check your email for password reset instructions.",
+        title: 'Password reset email sent',
+        description: 'Please check your email for password reset instructions.',
         duration: 6000,
       });
       setIsResetDialogOpen(false);
     } catch (error) {
       toast({
-        variant: "destructive",
-        title: "Password reset failed",
-        description: "Please check your email and try again.",
+        variant: 'destructive',
+        title: 'Password reset failed',
+        description: 'Please check your email and try again.',
         duration: 5000,
       });
     } finally {
@@ -153,20 +162,24 @@ function Login() {
         className="w-full max-w-md"
       >
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-8">
-          <Link 
-            to="/" 
+          <Link
+            to="/"
             className="inline-flex items-center text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 mb-6"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Home
           </Link>
-          
+
           <div className="flex flex-col items-center mb-8">
             <div className="h-12 w-12 bg-primary rounded-full flex items-center justify-center mb-4">
               <ChefHat className="h-6 w-6 text-primary-foreground" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Welcome to Xhef.io</h1>
-            <p className="text-gray-500 dark:text-gray-400 mt-2">Sign in to your account</p>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+              Welcome to Xhef.io
+            </h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-2">
+              Sign in to your account
+            </p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-6">
@@ -177,7 +190,7 @@ function Login() {
                 type="email"
                 placeholder="Enter your email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={e => setEmail(e.target.value)}
                 required
                 disabled={isLoading}
               />
@@ -199,29 +212,25 @@ function Login() {
                 type="password"
                 placeholder="Enter your password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={e => setPassword(e.target.value)}
                 required
                 disabled={isLoading}
               />
             </div>
 
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading}
-            >
+            <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Signing in...
                 </>
               ) : (
-                "Sign in"
+                'Sign in'
               )}
             </Button>
 
             <p className="text-center text-sm text-gray-500 dark:text-gray-400">
-              Don't have an account?{" "}
+              Don't have an account?{' '}
               <Link to="/signup" className="text-primary hover:underline">
                 Sign up
               </Link>
@@ -235,7 +244,8 @@ function Login() {
           <DialogHeader>
             <DialogTitle>Reset Password</DialogTitle>
             <DialogDescription>
-              Enter your email address and we'll send you instructions to reset your password.
+              Enter your email address and we'll send you instructions to reset
+              your password.
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handlePasswordReset} className="space-y-4 mt-4">
@@ -246,7 +256,7 @@ function Login() {
                 type="email"
                 placeholder="Enter your email"
                 value={resetEmail}
-                onChange={(e) => setResetEmail(e.target.value)}
+                onChange={e => setResetEmail(e.target.value)}
                 required
                 disabled={isResettingPassword}
               />
@@ -260,17 +270,14 @@ function Login() {
               >
                 Cancel
               </Button>
-              <Button
-                type="submit"
-                disabled={isResettingPassword}
-              >
+              <Button type="submit" disabled={isResettingPassword}>
                 {isResettingPassword ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Sending...
                   </>
                 ) : (
-                  "Send Instructions"
+                  'Send Instructions'
                 )}
               </Button>
             </DialogFooter>

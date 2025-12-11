@@ -1,22 +1,22 @@
-import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { ChefHat, Menu, X } from "lucide-react";
+import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { ChefHat, Menu, X } from 'lucide-react';
 
 function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
 
   const navigationLinks = [
-    { name: "Features", path: "/features" },
-    { name: "Pricing", path: "/pricing" },
-    { name: "Demo", path: "/demo" },
-    { name: "About", path: "/about" },
-    { name: "Blog", path: "/blog" },
-    { name: "Contact", path: "/contact" }
+    { name: 'Features', path: '/features' },
+    { name: 'Pricing', path: '/pricing' },
+    { name: 'Demo', path: '/demo' },
+    { name: 'About', path: '/about' },
+    { name: 'Blog', path: '/blog' },
+    { name: 'Contact', path: '/contact' },
   ];
 
-  const isActive = (path) => location.pathname === path;
+  const isActive = path => location.pathname === path;
 
   return (
     <nav className="fixed top-0 w-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm z-50 shadow-sm">
@@ -32,14 +32,14 @@ function Navigation() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            {navigationLinks.map((link) => (
+            {navigationLinks.map(link => (
               <Link
                 key={link.name}
                 to={link.path}
                 className={`text-sm font-medium transition-colors hover:text-primary ${
                   isActive(link.path)
-                    ? "text-primary"
-                    : "text-gray-700 dark:text-gray-300"
+                    ? 'text-primary'
+                    : 'text-gray-700 dark:text-gray-300'
                 }`}
               >
                 {link.name}
@@ -76,14 +76,14 @@ function Navigation() {
         {isMenuOpen && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white dark:bg-gray-800 shadow-lg rounded-b-lg">
-              {navigationLinks.map((link) => (
+              {navigationLinks.map(link => (
                 <Link
                   key={link.name}
                   to={link.path}
                   className={`block px-3 py-2 text-base font-medium transition-colors hover:text-primary ${
                     isActive(link.path)
-                      ? "text-primary bg-gray-50 dark:bg-gray-700"
-                      : "text-gray-700 dark:text-gray-300"
+                      ? 'text-primary bg-gray-50 dark:bg-gray-700'
+                      : 'text-gray-700 dark:text-gray-300'
                   }`}
                   onClick={() => setIsMenuOpen(false)}
                 >

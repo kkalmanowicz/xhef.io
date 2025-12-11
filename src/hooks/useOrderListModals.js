@@ -5,11 +5,11 @@ const useOrderListModals = () => {
     isAddToOrderOpen: false,
     isCompleteOrderOpen: false,
     isDeleteOpen: false,
-    isEditOrderItemOpen: false, 
+    isEditOrderItemOpen: false,
   });
-  
-  const [selectedInventoryItem, setSelectedInventoryItem] = useState(null); 
-  const [itemToDelete, setItemToDelete] = useState(null); 
+
+  const [selectedInventoryItem, setSelectedInventoryItem] = useState(null);
+  const [itemToDelete, setItemToDelete] = useState(null);
   const [itemToEdit, setItemToEdit] = useState(null);
 
   const handleOpenModal = (modalName, item = null) => {
@@ -19,7 +19,7 @@ const useOrderListModals = () => {
     setModalState(prev => ({ ...prev, [modalName]: true }));
   };
 
-  const handleCloseModal = (modalName) => {
+  const handleCloseModal = modalName => {
     setModalState(prev => ({ ...prev, [modalName]: false }));
     if (modalName === 'isAddToOrderOpen') setSelectedInventoryItem(null);
     if (modalName === 'isDeleteOpen') setItemToDelete(null);

@@ -1,17 +1,17 @@
-import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { useSupabase } from "@/contexts/SupabaseContext";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
-import { ChefHat, Loader2, ArrowLeft, CheckCircle2 } from "lucide-react";
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { useSupabase } from '@/contexts/SupabaseContext';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useToast } from '@/components/ui/use-toast';
+import { ChefHat, Loader2, ArrowLeft, CheckCircle2 } from 'lucide-react';
 
 function SignUp() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errors, setErrors] = useState({});
@@ -24,48 +24,48 @@ function SignUp() {
 
     // Email validation
     if (!email) {
-      newErrors.email = "Email is required";
+      newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = "Please enter a valid email address";
+      newErrors.email = 'Please enter a valid email address';
     }
 
     // Enhanced password validation based on Supabase requirements
     if (!password) {
-      newErrors.password = "Password is required";
+      newErrors.password = 'Password is required';
     } else {
       const passwordIssues = [];
 
       if (password.length < 8) {
-        passwordIssues.push("at least 8 characters");
+        passwordIssues.push('at least 8 characters');
       }
       if (!/[a-z]/.test(password)) {
-        passwordIssues.push("a lowercase letter");
+        passwordIssues.push('a lowercase letter');
       }
       if (!/[A-Z]/.test(password)) {
-        passwordIssues.push("an uppercase letter");
+        passwordIssues.push('an uppercase letter');
       }
       if (!/[0-9]/.test(password)) {
-        passwordIssues.push("a number");
+        passwordIssues.push('a number');
       }
       if (!/[^a-zA-Z0-9]/.test(password)) {
-        passwordIssues.push("a special character (!@#$%^&*)");
+        passwordIssues.push('a special character (!@#$%^&*)');
       }
 
       if (passwordIssues.length > 0) {
-        newErrors.password = `Password must include ${passwordIssues.join(", ")}`;
+        newErrors.password = `Password must include ${passwordIssues.join(', ')}`;
       }
     }
 
     // Confirm password validation
     if (password !== confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match";
+      newErrors.confirmPassword = 'Passwords do not match';
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSignUp = async (e) => {
+  const handleSignUp = async e => {
     e.preventDefault();
 
     if (!validateForm()) {
@@ -81,7 +81,7 @@ function SignUp() {
       timestamp: new Date().toISOString(),
       userAgent: navigator.userAgent,
       url: window.location.href,
-      redirectTo: window.location.origin + '/email-confirmed'
+      redirectTo: window.location.origin + '/email-confirmed',
     });
 
     try {
@@ -89,8 +89,8 @@ function SignUp() {
         email,
         password,
         options: {
-          emailRedirectTo: window.location.origin + '/email-confirmed'
-        }
+          emailRedirectTo: window.location.origin + '/email-confirmed',
+        },
       });
 
       // Detailed error logging
@@ -100,30 +100,37 @@ function SignUp() {
           error_message: error.message,
           email: email,
           timestamp: new Date().toISOString(),
-          supabase_error: error
+          supabase_error: error,
         });
 
-        let errorMessage = error.message || "An error occurred during sign up";
-        let errorTitle = "Sign up failed";
+        let errorMessage = error.message || 'An error occurred during sign up';
+        let errorTitle = 'Sign up failed';
 
         // Enhanced error handling
-        if (error.message.includes("User already registered") || error.message.includes("already been registered")) {
-          errorMessage = "This email is already registered. Please sign in instead or use a different email.";
-          errorTitle = "Email already exists";
-        } else if (error.message.includes("Password should be at least")) {
-          errorMessage = "Password is too weak. Please follow the password requirements above.";
-          errorTitle = "Weak password";
-        } else if (error.message.includes("Invalid email")) {
-          errorMessage = "Please enter a valid email address";
-          errorTitle = "Invalid email";
-        } else if (error.message.includes("Signup is disabled")) {
-          errorMessage = "Account creation is temporarily disabled. Please try again later.";
-          errorTitle = "Signup disabled";
+        if (
+          error.message.includes('User already registered') ||
+          error.message.includes('already been registered')
+        ) {
+          errorMessage =
+            'This email is already registered. Please sign in instead or use a different email.';
+          errorTitle = 'Email already exists';
+        } else if (error.message.includes('Password should be at least')) {
+          errorMessage =
+            'Password is too weak. Please follow the password requirements above.';
+          errorTitle = 'Weak password';
+        } else if (error.message.includes('Invalid email')) {
+          errorMessage = 'Please enter a valid email address';
+          errorTitle = 'Invalid email';
+        } else if (error.message.includes('Signup is disabled')) {
+          errorMessage =
+            'Account creation is temporarily disabled. Please try again later.';
+          errorTitle = 'Signup disabled';
         } else if (error.status === 422) {
-          errorMessage = "Please check your email and password format and try again.";
+          errorMessage =
+            'Please check your email and password format and try again.';
         } else if (error.status >= 500) {
-          errorMessage = "Server error. Please try again in a few moments.";
-          errorTitle = "Server error";
+          errorMessage = 'Server error. Please try again in a few moments.';
+          errorTitle = 'Server error';
         }
 
         throw new Error(errorMessage);
@@ -137,13 +144,14 @@ function SignUp() {
           email_confirmed: data.user.email_confirmed_at !== null,
           confirmation_sent_at: data.user.confirmation_sent_at,
           created_at: data.user.created_at,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
         setIsSuccess(true);
         toast({
-          title: "Account created successfully!",
-          description: "Please check your email to confirm your account before signing in.",
+          title: 'Account created successfully!',
+          description:
+            'Please check your email to confirm your account before signing in.',
           duration: 8000,
         });
       }
@@ -151,12 +159,12 @@ function SignUp() {
       console.error('❌ Signup failed:', {
         error_message: error.message,
         email: email,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
 
       toast({
-        variant: "destructive",
-        title: "Sign up failed",
+        variant: 'destructive',
+        title: 'Sign up failed',
         description: error.message,
         duration: 8000,
       });
@@ -181,19 +189,17 @@ function SignUp() {
               Check your email
             </h2>
             <p className="text-gray-600 dark:text-gray-300 mb-6">
-              We've sent a confirmation email to <strong>{email}</strong>. Please click the link in the email to verify your account.
+              We've sent a confirmation email to <strong>{email}</strong>.
+              Please click the link in the email to verify your account.
             </p>
             <p className="text-gray-500 dark:text-gray-400 mb-6">
               Once confirmed, you can sign in to your account.
             </p>
-            <Button
-              onClick={() => navigate("/login")}
-              className="w-full"
-            >
+            <Button onClick={() => navigate('/login')} className="w-full">
               Go to Sign In
             </Button>
             <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
-              Didn't receive the email?{" "}
+              Didn't receive the email?{' '}
               <button
                 onClick={handleSignUp}
                 className="text-primary hover:underline"
@@ -215,8 +221,8 @@ function SignUp() {
         className="w-full max-w-md"
       >
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-8">
-          <Link 
-            to="/" 
+          <Link
+            to="/"
             className="inline-flex items-center text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 mb-6"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
@@ -227,8 +233,12 @@ function SignUp() {
             <div className="h-12 w-12 bg-primary rounded-full flex items-center justify-center mb-4">
               <ChefHat className="h-6 w-6 text-primary-foreground" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Create your account</h1>
-            <p className="text-gray-500 dark:text-gray-400 mt-2">Start managing your kitchen efficiently</p>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+              Create your account
+            </h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-2">
+              Start managing your kitchen efficiently
+            </p>
           </div>
 
           <form onSubmit={handleSignUp} className="space-y-6">
@@ -239,8 +249,8 @@ function SignUp() {
                 type="email"
                 placeholder="Enter your email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className={errors.email ? "border-red-500" : ""}
+                onChange={e => setEmail(e.target.value)}
+                className={errors.email ? 'border-red-500' : ''}
                 disabled={isLoading}
               />
               {errors.email && (
@@ -255,8 +265,8 @@ function SignUp() {
                 type="password"
                 placeholder="Create a password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className={errors.password ? "border-red-500" : ""}
+                onChange={e => setPassword(e.target.value)}
+                className={errors.password ? 'border-red-500' : ''}
                 disabled={isLoading}
               />
               {errors.password && (
@@ -271,8 +281,8 @@ function SignUp() {
                 type="password"
                 placeholder="Confirm your password"
                 value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className={errors.confirmPassword ? "border-red-500" : ""}
+                onChange={e => setConfirmPassword(e.target.value)}
+                className={errors.confirmPassword ? 'border-red-500' : ''}
                 disabled={isLoading}
               />
               {errors.confirmPassword && (
@@ -280,23 +290,19 @@ function SignUp() {
               )}
             </div>
 
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading}
-            >
+            <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Creating account...
                 </>
               ) : (
-                "Create Account"
+                'Create Account'
               )}
             </Button>
 
             <p className="text-center text-sm text-gray-500 dark:text-gray-400">
-              Already have an account?{" "}
+              Already have an account?{' '}
               <Link to="/login" className="text-primary hover:underline">
                 Sign in
               </Link>

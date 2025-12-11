@@ -1,9 +1,10 @@
-import React from "react";
+import React from 'react';
 
 export const fetchCurrentOrderItems = async (supabase, userId) => {
   const { data, error } = await supabase
     .from('order_items')
-    .select(`
+    .select(
+      `
       *,
       inventory_items (
         id,
@@ -12,7 +13,8 @@ export const fetchCurrentOrderItems = async (supabase, userId) => {
         categories (name),
         vendors (id, name)
       )
-    `)
+    `
+    )
     .eq('user_id', userId)
     .eq('status', 'pending')
     .is('order_id', null)
@@ -25,11 +27,13 @@ export const fetchCurrentOrderItems = async (supabase, userId) => {
 export const fetchSuggestedOrderItems = async (supabase, userId) => {
   const { data, error } = await supabase
     .from('inventory_items')
-    .select(`
+    .select(
+      `
       *,
       categories (name),
       vendors (id, name)
-    `)
+    `
+    )
     .eq('user_id', userId)
     .not('current_stock', 'is', null)
     .not('par_level', 'is', null);
@@ -38,17 +42,19 @@ export const fetchSuggestedOrderItems = async (supabase, userId) => {
 
   return (data || [])
     .map(item => {
-      const stockPercentage = item.par_level > 0 ? ((item.current_stock / item.par_level) * 100) : 100;
+      const stockPercentage =
+        item.par_level > 0 ? (item.current_stock / item.par_level) * 100 : 100;
       const stockDifference = Math.max(0, item.par_level - item.current_stock);
       let urgency = 1; // Low
-      if (stockPercentage <= 25) urgency = 3; // High
+      if (stockPercentage <= 25)
+        urgency = 3; // High
       else if (stockPercentage <= 50) urgency = 2; // Medium
 
       return {
         ...item,
         stock_percentage: stockPercentage.toFixed(2),
         stock_difference: stockDifference,
-        urgency
+        urgency,
       };
     })
     .filter(item => item.current_stock < item.par_level)
@@ -58,7 +64,8 @@ export const fetchSuggestedOrderItems = async (supabase, userId) => {
 export const fetchOrderHistoryPageData = async (supabase, userId) => {
   const { data, error } = await supabase
     .from('orders')
-    .select(`
+    .select(
+      `
       *,
       order_history (
         *,
@@ -68,7 +75,8 @@ export const fetchOrderHistoryPageData = async (supabase, userId) => {
           vendors (name)
         )
       )
-    `)
+    `
+    )
     .eq('user_id', userId)
     .eq('status', 'completed')
     .order('created_at', { ascending: false });
@@ -91,14 +99,16 @@ export const fetchCompletedOrderDetails = async (supabase, userId, orderId) => {
 
   const { data: orderItemsData, error: itemsError } = await supabase
     .from('order_history')
-    .select(`
+    .select(
+      `
       *,
       inventory_items (
         name,
         unit,
         vendors (id, name)
       )
-    `)
+    `
+    )
     .eq('order_id', orderId)
     .eq('user_id', userId)
     .order('created_at', { ascending: true });
@@ -108,47 +118,57 @@ export const fetchCompletedOrderDetails = async (supabase, userId, orderId) => {
   return { ...orderData, items: orderItemsData || [] };
 };
 
-
-export const updateOrderItemQuantity = async (supabase, itemId, newQuantity, pricePerUnit) => {
+export const updateOrderItemQuantity = async (
+  supabase,
+  itemId,
+  newQuantity,
+  pricePerUnit
+) => {
   const quantity = parseFloat(newQuantity);
-  if (isNaN(quantity) || quantity < 0) return { error: { message: "Invalid quantity" } };
+  if (isNaN(quantity) || quantity < 0)
+    return { error: { message: 'Invalid quantity' } };
 
   return await supabase
     .from('order_items')
-    .update({ 
+    .update({
       quantity,
-      total_price: quantity * (pricePerUnit || 0)
+      total_price: quantity * (pricePerUnit || 0),
     })
     .eq('id', itemId);
 };
 
-export const updateOrderItemPrice = async (supabase, itemId, newPrice, currentQuantity) => {
-    const price = parseFloat(newPrice);
-    if (isNaN(price) || price < 0) return { error: { message: "Invalid price" } };
-    const quantity = parseFloat(currentQuantity);
-    if(isNaN(quantity)) return { error: { message: "Invalid quantity for price update"}};
+export const updateOrderItemPrice = async (
+  supabase,
+  itemId,
+  newPrice,
+  currentQuantity
+) => {
+  const price = parseFloat(newPrice);
+  if (isNaN(price) || price < 0) return { error: { message: 'Invalid price' } };
+  const quantity = parseFloat(currentQuantity);
+  if (isNaN(quantity))
+    return { error: { message: 'Invalid quantity for price update' } };
 
-
-    return await supabase
-        .from('order_items')
-        .update({
-            price_per_unit: price,
-            total_price: price * quantity
-        })
-        .eq('id', itemId);
+  return await supabase
+    .from('order_items')
+    .update({
+      price_per_unit: price,
+      total_price: price * quantity,
+    })
+    .eq('id', itemId);
 };
-
 
 export const deleteOrderItem = async (supabase, itemId, userId) => {
   return await supabase
     .from('order_items')
     .delete()
     .eq('id', itemId)
-    .eq('user_id', userId); 
+    .eq('user_id', userId);
 };
 
 export const completeOrder = async (supabase, userId, currentOrderItems) => {
-  if (currentOrderItems.length === 0) throw new Error("Current order is empty.");
+  if (currentOrderItems.length === 0)
+    throw new Error('Current order is empty.');
 
   const { data: orderData, error: orderError } = await supabase
     .from('orders')
@@ -157,7 +177,10 @@ export const completeOrder = async (supabase, userId, currentOrderItems) => {
       user_id: userId,
       created_at: new Date().toISOString(),
       completed_at: new Date().toISOString(),
-      total_amount: currentOrderItems.reduce((sum, item) => sum + (item.total_price || 0), 0)
+      total_amount: currentOrderItems.reduce(
+        (sum, item) => sum + (item.total_price || 0),
+        0
+      ),
     })
     .select()
     .single();
@@ -168,11 +191,11 @@ export const completeOrder = async (supabase, userId, currentOrderItems) => {
     order_id: orderData.id,
     inventory_item_id: item.inventory_item_id,
     quantity: item.quantity,
-    unit: item.inventory_items?.unit || item.unit, 
+    unit: item.inventory_items?.unit || item.unit,
     price_per_unit: item.price_per_unit,
     total_price: item.total_price,
     created_at: new Date().toISOString(),
-    user_id: userId 
+    user_id: userId,
   }));
 
   const { error: historyError } = await supabase
