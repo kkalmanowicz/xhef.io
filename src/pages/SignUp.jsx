@@ -22,18 +22,41 @@ function SignUp() {
   const validateForm = () => {
     const newErrors = {};
 
+    // Email validation
     if (!email) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(email)) {
       newErrors.email = "Please enter a valid email address";
     }
 
+    // Enhanced password validation based on Supabase requirements
     if (!password) {
       newErrors.password = "Password is required";
-    } else if (password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters long";
+    } else {
+      const passwordIssues = [];
+
+      if (password.length < 8) {
+        passwordIssues.push("at least 8 characters");
+      }
+      if (!/[a-z]/.test(password)) {
+        passwordIssues.push("a lowercase letter");
+      }
+      if (!/[A-Z]/.test(password)) {
+        passwordIssues.push("an uppercase letter");
+      }
+      if (!/[0-9]/.test(password)) {
+        passwordIssues.push("a number");
+      }
+      if (!/[^a-zA-Z0-9]/.test(password)) {
+        passwordIssues.push("a special character (!@#$%^&*)");
+      }
+
+      if (passwordIssues.length > 0) {
+        newErrors.password = `Password must include ${passwordIssues.join(", ")}`;
+      }
     }
 
+    // Confirm password validation
     if (password !== confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
     }
@@ -44,27 +67,79 @@ function SignUp() {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
+      console.log('❌ Signup validation failed:', errors);
       return;
     }
 
     setIsLoading(true);
+
+    // Log signup attempt (without sensitive data)
+    console.log('📝 Signup attempt:', {
+      email: email,
+      timestamp: new Date().toISOString(),
+      userAgent: navigator.userAgent,
+      url: window.location.href,
+      redirectTo: window.location.origin + '/email-confirmed'
+    });
 
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: window.location.origin + '/login'
+          emailRedirectTo: window.location.origin + '/email-confirmed'
         }
       });
 
+      // Detailed error logging
       if (error) {
-        throw error;
+        console.error('❌ Signup error details:', {
+          error_code: error.status,
+          error_message: error.message,
+          email: email,
+          timestamp: new Date().toISOString(),
+          supabase_error: error
+        });
+
+        let errorMessage = error.message || "An error occurred during sign up";
+        let errorTitle = "Sign up failed";
+
+        // Enhanced error handling
+        if (error.message.includes("User already registered") || error.message.includes("already been registered")) {
+          errorMessage = "This email is already registered. Please sign in instead or use a different email.";
+          errorTitle = "Email already exists";
+        } else if (error.message.includes("Password should be at least")) {
+          errorMessage = "Password is too weak. Please follow the password requirements above.";
+          errorTitle = "Weak password";
+        } else if (error.message.includes("Invalid email")) {
+          errorMessage = "Please enter a valid email address";
+          errorTitle = "Invalid email";
+        } else if (error.message.includes("Signup is disabled")) {
+          errorMessage = "Account creation is temporarily disabled. Please try again later.";
+          errorTitle = "Signup disabled";
+        } else if (error.status === 422) {
+          errorMessage = "Please check your email and password format and try again.";
+        } else if (error.status >= 500) {
+          errorMessage = "Server error. Please try again in a few moments.";
+          errorTitle = "Server error";
+        }
+
+        throw new Error(errorMessage);
       }
 
+      // Success logging
       if (data?.user) {
+        console.log('✅ Signup successful:', {
+          user_id: data.user.id,
+          email: data.user.email,
+          email_confirmed: data.user.email_confirmed_at !== null,
+          confirmation_sent_at: data.user.confirmation_sent_at,
+          created_at: data.user.created_at,
+          timestamp: new Date().toISOString()
+        });
+
         setIsSuccess(true);
         toast({
           title: "Account created successfully!",
@@ -73,19 +148,17 @@ function SignUp() {
         });
       }
     } catch (error) {
-      let errorMessage = "An error occurred during sign up";
-      
-      if (error.message.includes("email")) {
-        errorMessage = "This email is already registered";
-      } else if (error.message.includes("password")) {
-        errorMessage = "Password is too weak. Please use at least 6 characters";
-      }
+      console.error('❌ Signup failed:', {
+        error_message: error.message,
+        email: email,
+        timestamp: new Date().toISOString()
+      });
 
       toast({
         variant: "destructive",
         title: "Sign up failed",
-        description: errorMessage,
-        duration: 5000,
+        description: error.message,
+        duration: 8000,
       });
     } finally {
       setIsLoading(false);

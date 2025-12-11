@@ -31,21 +31,67 @@ function Login() {
     e.preventDefault();
     setIsLoading(true);
 
+    // Log login attempt (without sensitive data)
+    console.log('🔐 Login attempt:', {
+      email: email,
+      timestamp: new Date().toISOString(),
+      userAgent: navigator.userAgent,
+      url: window.location.href
+    });
+
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
+      // Detailed error logging
       if (error) {
+        console.error('❌ Login error details:', {
+          error_code: error.status,
+          error_message: error.message,
+          email: email,
+          timestamp: new Date().toISOString(),
+          supabase_error: error
+        });
+
         let errorMessage = "Invalid email or password";
+        let errorTitle = "Login failed";
+
+        // Enhanced error handling based on Supabase error types
         if (error.message.includes("Email not confirmed")) {
-          errorMessage = "Please confirm your email address before signing in";
+          errorMessage = "Please check your email and click the confirmation link before signing in";
+          errorTitle = "Email not confirmed";
+        } else if (error.message.includes("Invalid login credentials")) {
+          errorMessage = "The email or password you entered is incorrect. Please try again.";
+        } else if (error.message.includes("Email not found") || error.message.includes("User not found")) {
+          errorMessage = "No account found with this email address. Please check your email or sign up for a new account.";
+        } else if (error.message.includes("Too many requests")) {
+          errorMessage = "Too many login attempts. Please wait a few minutes before trying again.";
+          errorTitle = "Rate limited";
+        } else if (error.message.includes("Password")) {
+          errorMessage = "Incorrect password. Please check your password and try again.";
+        } else if (error.status === 422) {
+          errorMessage = "Please check your email and password format and try again.";
+        } else if (error.status >= 500) {
+          errorMessage = "Server error. Please try again in a few moments.";
+          errorTitle = "Server error";
         }
+
         throw new Error(errorMessage);
       }
 
+      // Success logging
       if (data?.user) {
+        console.log('✅ Login successful:', {
+          user_id: data.user.id,
+          email: data.user.email,
+          email_confirmed: data.user.email_confirmed_at !== null,
+          created_at: data.user.created_at,
+          last_sign_in: data.user.last_sign_in_at,
+          timestamp: new Date().toISOString()
+        });
+
         toast({
           title: "Welcome back!",
           description: "Successfully logged in to your account.",
@@ -53,11 +99,17 @@ function Login() {
         navigate("/dashboard");
       }
     } catch (error) {
+      console.error('❌ Login failed:', {
+        error_message: error.message,
+        email: email,
+        timestamp: new Date().toISOString()
+      });
+
       toast({
         variant: "destructive",
         title: "Login failed",
         description: error.message,
-        duration: 5000,
+        duration: 8000,
       });
     } finally {
       setIsLoading(false);

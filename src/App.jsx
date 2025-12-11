@@ -4,6 +4,7 @@ import Layout from "@/components/Layout";
 import Landing from "@/pages/Landing";
 import Login from "@/pages/Login";
 import SignUp from "@/pages/SignUp";
+import EmailConfirmed from "@/pages/EmailConfirmed";
 import Dashboard from "@/pages/Dashboard";
 import Inventory from "@/pages/Inventory";
 import PrepItems from "@/pages/PrepItems";
@@ -48,6 +49,7 @@ function App() {
           </PublicRoute>
         }
       />
+      <Route path="/email-confirmed" element={<EmailConfirmed />} />
 
       {/* Protected dashboard routes */}
       <Route

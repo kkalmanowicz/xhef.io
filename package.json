@@ -6,7 +6,16 @@
   "scripts": {
     "dev": "vite --host :: --port 3000",
     "build": "vite build",
-    "preview": "vite preview --host :: --port 3000"
+    "preview": "vite preview --host :: --port 3000",
+    "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint src --ext js,jsx --fix",
+    "format": "prettier --write src/**/*.{js,jsx}",
+    "format:check": "prettier --check src/**/*.{js,jsx}",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "db:migrate": "echo 'Copy MIGRATION.sql to Supabase SQL Editor and run it'",
+    "db:setup": "echo 'Copy DATABASE_SETUP.sql to Supabase SQL Editor and run it'"
   },
   "dependencies": {
     "@radix-ui/react-alert-dialog": "^1.0.5",

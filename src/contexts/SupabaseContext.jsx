@@ -17,18 +17,37 @@ export function SupabaseProvider({ children }) {
   useEffect(() => {
     let mounted = true;
 
+    // Failsafe timeout - ensure loading never hangs indefinitely
+    const failsafeTimeout = setTimeout(() => {
+      if (mounted && isLoading) {
+        console.warn('Auth initialization taking too long, proceeding without session');
+        setIsLoading(false);
+        setIsInitialized(true);
+      }
+    }, 15000); // 15 second maximum loading time
+
     const initializeAuth = async () => {
       try {
-        // Get initial session
-        const { data: { session: initialSession }, error: sessionError } = await supabase.auth.getSession();
+        // Get initial session with timeout
+        const sessionPromise = supabase.auth.getSession();
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Auth timeout')), 10000)
+        );
+
+        const { data: { session: initialSession }, error: sessionError } = await Promise.race([
+          sessionPromise,
+          timeoutPromise
+        ]);
+
         if (sessionError) throw sessionError;
 
         if (mounted) {
           setSession(initialSession);
           setUserId(initialSession?.user?.id || null);
-          
+
           if (initialSession?.user?.id) {
-            await initializeUserData(initialSession.user.id);
+            // Initialize user data in background, don't block UI
+            initializeUserData(initialSession.user.id).catch(console.warn);
           }
         }
 
@@ -39,7 +58,10 @@ export function SupabaseProvider({ children }) {
             setUserId(currentSession?.user?.id || null);
 
             if (currentSession?.user?.id) {
-              await initializeUserData(currentSession.user.id);
+              // Initialize user data in background for new sign-ins only
+              if (event === 'SIGNED_IN') {
+                initializeUserData(currentSession.user.id).catch(console.warn);
+              }
             }
 
             // Handle specific auth events
@@ -76,6 +98,7 @@ export function SupabaseProvider({ children }) {
         if (mounted) {
           setIsInitialized(true);
           setIsLoading(false);
+          clearTimeout(failsafeTimeout);
         }
 
         return () => {
@@ -91,6 +114,7 @@ export function SupabaseProvider({ children }) {
             description: "Failed to initialize authentication. Please refresh the page.",
           });
           setIsLoading(false);
+          clearTimeout(failsafeTimeout);
         }
       }
     };
@@ -99,6 +123,7 @@ export function SupabaseProvider({ children }) {
 
     return () => {
       mounted = false;
+      clearTimeout(failsafeTimeout);
     };
   }, []);
 
@@ -106,69 +131,66 @@ export function SupabaseProvider({ children }) {
     if (!userId) return false;
 
     try {
-      // Check if user has any categories
-      const { data: existingCategories, error: categoriesError } = await supabase
+      // Skip initialization for returning users - only do it for completely new users
+      // Check if user has any data at all
+      const { data: existingCategories, error: categoriesError } = await Promise.race([
+        supabase
+          .from('categories')
+          .select('id')
+          .eq('user_id', userId)
+          .limit(1),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 5000))
+      ]);
+
+      if (categoriesError && categoriesError.message !== 'Timeout') {
+        throw categoriesError;
+      }
+
+      // If query timed out or user already has data, skip initialization
+      if (categoriesError?.message === 'Timeout' || existingCategories?.length > 0) {
+        return true;
+      }
+
+      // Only create default data for completely new users with no existing data
+      const defaultCategories = [
+        'Produce',
+        'Meat',
+        'Dairy',
+        'Dry Goods',
+        'Beverages',
+        'Supplies'
+      ];
+
+      const categoryInserts = defaultCategories.map(name => ({
+        name,
+        user_id: userId,
+        created_at: new Date().toISOString()
+      }));
+
+      const { error: insertError } = await supabase
         .from('categories')
-        .select('id')
-        .eq('user_id', userId)
-        .limit(1);
+        .insert(categoryInserts);
 
-      if (categoriesError) throw categoriesError;
+      if (insertError) throw insertError;
 
-      // If no categories exist, create default ones
-      if (!existingCategories?.length) {
-        const defaultCategories = [
-          'Produce',
-          'Meat',
-          'Dairy',
-          'Dry Goods',
-          'Beverages',
-          'Supplies'
-        ];
-
-        for (const categoryName of defaultCategories) {
-          const { error } = await supabase
-            .from('categories')
-            .insert({
-              name: categoryName,
-              user_id: userId,
-              created_at: new Date().toISOString()
-            });
-
-          if (error) throw error;
-        }
-      }
-
-      // Check if user has any vendors
-      const { data: existingVendors, error: vendorsError } = await supabase
+      // Create default vendor
+      const { error: vendorError } = await supabase
         .from('vendors')
-        .select('id')
-        .eq('user_id', userId)
-        .limit(1);
+        .insert({
+          name: 'General Supplier',
+          user_id: userId,
+          created_at: new Date().toISOString()
+        });
 
-      if (vendorsError) throw vendorsError;
-
-      // If no vendors exist, create a default one
-      if (!existingVendors?.length) {
-        const { error } = await supabase
-          .from('vendors')
-          .insert({
-            name: 'General Supplier',
-            user_id: userId,
-            created_at: new Date().toISOString()
-          });
-
-        if (error) throw error;
-      }
+      if (vendorError) throw vendorError;
 
       return true;
     } catch (error) {
       console.error('Error initializing user data:', error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to initialize user data. Please try again.",
-      });
+      // Don't show error toast for returning users - just log it
+      if (error.message !== 'Timeout') {
+        console.warn('Skipping user data initialization for returning user');
+      }
       return false;
     }
   };
