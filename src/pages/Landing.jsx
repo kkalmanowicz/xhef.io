@@ -2,13 +2,14 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { 
-  ChefHat, 
-  BarChart2, 
-  Clock, 
-  Package, 
-  Shield, 
-  CheckCircle2, 
+import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
+import {
+  BarChart2,
+  Clock,
+  Package,
+  Shield,
+  CheckCircle2,
   PlayCircle,
   ArrowRight,
   Boxes,
@@ -77,24 +78,7 @@ function Landing() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
-      <nav className="fixed top-0 w-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm z-50 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center">
-              <ChefHat className="h-8 w-8 text-primary" />
-              <span className="ml-2 text-xl font-bold text-gray-900 dark:text-white">Xhef.io</span>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link to="/login">
-                <Button variant="ghost">Sign In</Button>
-              </Link>
-              <Link to="/signup">
-                <Button>Get Started</Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navigation />
 
       <main className="pt-16">
         {/* Hero Section */}
@@ -117,14 +101,16 @@ function Landing() {
               <div className="flex flex-col sm:flex-row justify-center gap-4">
                 <Link to="/signup">
                   <Button size="lg" className="w-full sm:w-auto text-lg px-8">
-                    Start Free Trial
+                    Join Early Access
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
-                <Button size="lg" variant="outline" className="w-full sm:w-auto text-lg px-8">
-                  <PlayCircle className="mr-2 h-5 w-5" />
-                  Watch Demo
-                </Button>
+                <Link to="/demo">
+                  <Button size="lg" variant="outline" className="w-full sm:w-auto text-lg px-8">
+                    <PlayCircle className="mr-2 h-5 w-5" />
+                    Request Demo
+                  </Button>
+                </Link>
               </div>
             </motion.div>
 
@@ -173,114 +159,129 @@ function Landing() {
               </div>
             </div>
 
-            {/* Pricing Section */}
+            {/* Lead Capture Section */}
             <div className="mt-24">
-              <h2 className="text-3xl font-bold text-center mb-4">💼 Plans & Pricing</h2>
+              <h2 className="text-3xl font-bold text-center mb-4">🚀 Join the Kitchen Revolution</h2>
               <p className="text-center text-gray-600 dark:text-gray-300 mb-12">
-                Flexible pricing built for real kitchens.
+                Be among the first to experience AI-powered kitchen management. Get early access and special launch pricing.
               </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                {plans.map((plan, index) => (
-                  <motion.div
-                    key={plan.name}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden"
-                  >
-                    <div className="p-6">
-                      <h3 className="text-xl font-semibold mb-2">{plan.name}</h3>
-                      <div className="text-3xl font-bold mb-4">
-                        ${plan.price}
-                        <span className="text-sm font-normal text-gray-500">/mo</span>
-                      </div>
-                      <ul className="space-y-3">
-                        {plan.features.map((feature, featureIndex) => (
-                          <li key={featureIndex} className="flex items-center text-gray-600 dark:text-gray-300">
-                            <CheckCircle2 className="h-5 w-5 text-green-500 mr-2" />
-                            {feature}
-                          </li>
-                        ))}
-                      </ul>
-                      <Button className="w-full mt-6">
-                        Get Started
-                      </Button>
+              <div className="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
+                <form action="https://formspree.io/f/your-form-id" method="POST" className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        First Name
+                      </label>
+                      <input
+                        type="text"
+                        id="firstName"
+                        name="firstName"
+                        required
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white"
+                      />
                     </div>
-                  </motion.div>
-                ))}
-              </div>
-              <div className="flex justify-center mt-8 space-x-4">
-                <Button variant="outline" size="lg">
-                  Compare All Plans
-                </Button>
-                <Button variant="outline" size="lg">
-                  Request Demo
-                </Button>
+                    <div>
+                      <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Last Name
+                      </label>
+                      <input
+                        type="text"
+                        id="lastName"
+                        name="lastName"
+                        required
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Email Address
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="company" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Restaurant/Company Name
+                    </label>
+                    <input
+                      type="text"
+                      id="company"
+                      name="company"
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="operationType" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Operation Type
+                    </label>
+                    <select
+                      id="operationType"
+                      name="operationType"
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white"
+                    >
+                      <option value="">Select your operation type</option>
+                      <option value="restaurant">Restaurant</option>
+                      <option value="catering">Catering</option>
+                      <option value="multi-location">Multi-Location Chain</option>
+                      <option value="ghost-kitchen">Ghost Kitchen</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id="updates"
+                      name="updates"
+                      className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+                    />
+                    <label htmlFor="updates" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+                      Send me updates about xhef.io and kitchen management tips
+                    </label>
+                  </div>
+                  <Button type="submit" size="lg" className="w-full">
+                    Get Early Access
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </form>
+                <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-4">
+                  No spam, ever. Unsubscribe anytime.
+                </p>
               </div>
             </div>
 
             {/* Call to Action */}
             <div className="mt-24 text-center">
-              <h2 className="text-3xl font-bold mb-4">📣 Ready to Cook Smarter?</h2>
+              <h2 className="text-3xl font-bold mb-4">📣 Ready to Transform Your Kitchen?</h2>
               <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
-                Start managing your kitchen like a modern chef.
-                Try Xhef.io free and see what intelligent kitchen software can do for you.
+                Join the waiting list for early access to xhef.io. Be the first to experience the future of kitchen management.
               </p>
-              <Link to="/signup">
-                <Button size="lg" className="text-lg px-8">
-                  Get Started
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
+              <div className="flex flex-col sm:flex-row justify-center gap-4">
+                <Link to="/signup">
+                  <Button size="lg" className="text-lg px-8">
+                    Join Early Access
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+                <Link to="/demo">
+                  <Button size="lg" variant="outline" className="text-lg px-8">
+                    Request Demo
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-white dark:bg-gray-800 py-12 mt-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div>
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Product</h3>
-              <ul className="space-y-2">
-                <li><a href="#" className="text-gray-600 dark:text-gray-300 hover:text-primary">Features</a></li>
-                <li><a href="#" className="text-gray-600 dark:text-gray-300 hover:text-primary">Pricing</a></li>
-                <li><a href="#" className="text-gray-600 dark:text-gray-300 hover:text-primary">Demo</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Company</h3>
-              <ul className="space-y-2">
-                <li><a href="#" className="text-gray-600 dark:text-gray-300 hover:text-primary">About</a></li>
-                <li><a href="#" className="text-gray-600 dark:text-gray-300 hover:text-primary">Blog</a></li>
-                <li><a href="#" className="text-gray-600 dark:text-gray-300 hover:text-primary">Contact</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Resources</h3>
-              <ul className="space-y-2">
-                <li><a href="#" className="text-gray-600 dark:text-gray-300 hover:text-primary">Documentation</a></li>
-                <li><a href="#" className="text-gray-600 dark:text-gray-300 hover:text-primary">Help Center</a></li>
-                <li><a href="#" className="text-gray-600 dark:text-gray-300 hover:text-primary">Guides</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Legal</h3>
-              <ul className="space-y-2">
-                <li><a href="#" className="text-gray-600 dark:text-gray-300 hover:text-primary">Privacy</a></li>
-                <li><a href="#" className="text-gray-600 dark:text-gray-300 hover:text-primary">Terms</a></li>
-                <li><a href="#" className="text-gray-600 dark:text-gray-300 hover:text-primary">Security</a></li>
-              </ul>
-            </div>
-          </div>
-          <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
-            <p className="text-center text-gray-500 dark:text-gray-400">
-              © {new Date().getFullYear()} Xhef.io. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

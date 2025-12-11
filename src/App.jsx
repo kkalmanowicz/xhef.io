@@ -14,8 +14,15 @@ import CompletedOrderPage from "@/pages/CompletedOrderPage";
 import Recipes from "@/pages/Recipes";
 import Admin from "@/pages/Admin";
 import Events from "@/pages/Events";
-import Schedule from "@/pages/Schedule"; 
+import Schedule from "@/pages/Schedule";
 import Waste from "@/pages/Waste";
+import Features from "@/pages/Features";
+import Demo from "@/pages/Demo";
+import About from "@/pages/About";
+import Pricing from "@/pages/Pricing";
+import Blog from "@/pages/Blog";
+import Contact from "@/pages/Contact";
+import ComingSoon from "@/pages/ComingSoon";
 import { useSupabase } from "@/contexts/SupabaseContext";
 
 function PrivateRoute({ children }) {
@@ -33,6 +40,19 @@ function App() {
     <Routes>
       {/* Public routes */}
       <Route path="/" element={<Landing />} />
+      <Route path="/features" element={<Features />} />
+      <Route path="/pricing" element={<Pricing />} />
+      <Route path="/demo" element={<Demo />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/blog" element={<Blog />} />
+      <Route path="/contact" element={<Contact />} />
+      {/* Placeholder pages for remaining footer links */}
+      <Route path="/docs" element={<ComingSoon title="Documentation" description="Comprehensive guides and API documentation coming soon." />} />
+      <Route path="/help" element={<ComingSoon title="Help Center" description="FAQ, tutorials, and support resources coming soon." />} />
+      <Route path="/guides" element={<ComingSoon title="Best Practice Guides" description="Expert kitchen management guides coming soon." />} />
+      <Route path="/privacy" element={<ComingSoon title="Privacy Policy" description="Our privacy policy and data protection information coming soon." />} />
+      <Route path="/terms" element={<ComingSoon title="Terms of Service" description="Terms of service and user agreement coming soon." />} />
+      <Route path="/security" element={<ComingSoon title="Security" description="Information about our security practices coming soon." />} />
       <Route
         path="/login"
         element={
